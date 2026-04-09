@@ -10,35 +10,20 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        return view('admin.categories.index',[
-            'categories'=>Category::withCount('projects')->get()
-        ]);
+        $categories = Category::all();
+        return view('admin.categories.index', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        Category::create([
-            'name'=>$request->name,
-            'slug'=>$request->slug,
-            'is_active'=>1
-        ]);
-        return back();
-    }
-
-    public function update(Request $request, Category $category)
-    {
-        $category->update([
-            'name'=>$request->name,
-            'slug'=>$request->slug,
-            'is_active'=>$request->is_active ? 1 : 0
-        ]);
+        Category::create($request->all());
         return back();
     }
 
     public function destroy(Category $category)
     {
-        if($category->projects()->count()>0){
-            return back()->with('error','Kategori dipakai!');
+        if($category->projects()->count() > 0){
+            return back()->with('error','Kategori sedang dipakai');
         }
 
         $category->delete();

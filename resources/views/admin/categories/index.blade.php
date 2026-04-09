@@ -1,25 +1,35 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kelola Kategori</title>
+</head>
+<body>
 
-@section('content')
+<h2>Kelola Kategori</h2>
 
-<h2>Category</h2>
-
-<form method="POST" action="/categories">
+<form action="{{ route('admin.categories.store') }}" method="POST">
 @csrf
-<input name="name">
-<input name="slug">
-<button>Tambah</button>
+
+<input type="text" name="name" placeholder="Nama kategori"><br><br>
+<input type="text" name="slug" placeholder="Slug"><br><br>
+
+<button type="submit">Tambah</button>
 </form>
+
+<hr>
 
 @foreach($categories as $cat)
-<div>
-{{ $cat->name }}
-<form method="POST" action="/categories/{{ $cat->id }}">
-@csrf
-@method('DELETE')
-<button>Hapus</button>
-</form>
+<div style="border:1px solid #000; padding:10px; margin:10px;">
+    <b>{{ $cat->name }}</b>
+    ({{ $cat->is_active ? 'Aktif' : 'Nonaktif' }})
+
+    <form action="{{ route('admin.categories.destroy', $cat->id) }}" method="POST">
+        @csrf
+        @method('DELETE')
+        <button type="submit">Hapus</button>
+    </form>
 </div>
 @endforeach
 
-@endsection
+</body>
+</html>

@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Media;
+use Illuminate\Support\Facades\Storage;
 
-class MediaController extends Controller
+class MediaController
 {
     public function destroy(Media $media)
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403);
-        }
-
+        Storage::delete($media->file_path);
         $media->delete();
         return back();
     }

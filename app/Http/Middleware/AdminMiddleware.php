@@ -3,12 +3,13 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 
 class AdminMiddleware
 {
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        if (!auth()->user() || !auth()->user()->isAdmin()) {
+        if (!auth()->check() || auth()->user()->role->slug !== 'admin') {
             abort(403);
         }
 

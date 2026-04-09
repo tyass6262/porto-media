@@ -6,20 +6,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    protected $fillable = ['name', 'email', 'password', 'role_id'];
+    protected $fillable = ['name','email','password','role_id'];
 
-    public function role()
-    {
+    public function role(){
         return $this->belongsTo(Role::class);
     }
 
-    public function isAdmin()
-    {
-        return $this->role && $this->role->slug === 'admin';
-    }
-
-    public function projects()
-    {
+    public function projects(){
         return $this->hasMany(Project::class);
     }
 }
