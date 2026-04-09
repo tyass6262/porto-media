@@ -21,17 +21,20 @@ class ProjectController extends Controller
 
     public function create()
     {
-        $categories = Category::where('is_active',1)->get();
+        $categories = Category::where('is_active', 1)->get();
         return view('user.projects.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
+        // ✅ VALIDASI (FIX)
         $request->validate([
-            'title' => 'required',
-            'status' => 'required'
+            'title' => 'required|max:120',
+            'status' => 'required',
+            'media.*' => 'nullable|file|mimes:jpg,jpeg,png,mp4,pdf,doc,docx,zip|max:10240'
         ]);
 
+        // ✅ SIMPAN PROJECT
         $project = Project::create([
             'user_id' => auth()->id(),
             'title' => $request->title,
@@ -39,26 +42,32 @@ class ProjectController extends Controller
             'status' => $request->status
         ]);
 
-        if($request->categories){
+        // ✅ SIMPAN KATEGORI
+        if ($request->categories) {
             $project->categories()->sync($request->categories);
         }
 
-        if($request->hasFile('media')){
-            foreach($request->file('media') as $file){
+        // ✅ UPLOAD MULTIPLE FILE (FIX)
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
 
-                $path = $file->store('portfolio', 'public');
+                if ($file->isValid()) {
 
-                Media::create([
-                    'project_id' => $project->id,
-                    'file_path' => $path,
-                    'file_type' => $file->getClientMimeType(),
-                    'file_name' => $file->getClientOriginalName(),
-                    'file_size' => $file->getSize(),
-                ]);
+                    $path = $file->store('portfolio', 'public');
+
+                    Media::create([
+                        'project_id' => $project->id,
+                        'file_path' => $path,
+                        'file_type' => $file->getClientMimeType(),
+                        'file_name' => $file->getClientOriginalName(),
+                        'file_size' => $file->getSize(),
+                    ]);
+                }
             }
         }
 
-        return redirect()->route('user.projects.index');
+        return redirect()->route('user.projects.index')
+            ->with('success', 'Project berhasil ditambahkan!');
     }
 
     public function show(Project $project)
@@ -69,6 +78,6 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $project->delete();
-        return back();
+        return back()->with('success', 'Project berhasil dihapus!');
     }
 }
