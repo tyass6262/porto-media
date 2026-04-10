@@ -439,7 +439,6 @@
 </head>
 <body>
 
-    <!-- Background -->
     <div class="bg-layer"></div>
     <div class="grid-pattern"></div>
     <div class="particles" id="particles"></div>
@@ -489,9 +488,6 @@
                     </div>
                 </div>
                 <div class="hero-actions">
-                    <a href="{{ route('user.projects.edit', $project->id) }}" class="btn-action" title="Edit project" aria-label="Edit">
-                        <i class="fas fa-pen-to-square"></i>
-                    </a>
                     <button class="btn-action danger" title="Hapus project" aria-label="Hapus" onclick="confirmDelete('{{ $project->title }}', '{{ route('user.projects.destroy', $project->id) }}')">
                         <i class="fas fa-trash-can"></i>
                     </button>
