@@ -438,7 +438,6 @@
     <div class="grid-pattern"></div>
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <!-- ==================== SIDEBAR ==================== -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo"><i class="fas fa-shield-halved"></i></div>
@@ -463,11 +462,7 @@
                 <i class="fas fa-folder-open"></i> Semua Project
                 <span class="link-badge amber">{{ $projectCount ?? 0 }}</span>
             </a>
-            <div class="nav-section-title">Sistem</div>
-            <a href="#" class="nav-link">
-                <i class="fas fa-gear"></i> Pengaturan
-            </a>
-        </nav>
+            </nav>
         <div class="sidebar-footer">
             <div class="sidebar-user">
                 <div class="sidebar-avatar">A</div>
@@ -485,7 +480,6 @@
         </div>
     </aside>
 
-    <!-- ==================== MAIN ==================== -->
     <div class="main-wrapper">
         <header class="topbar">
             <div class="topbar-left">
@@ -507,7 +501,6 @@
 
         <div class="page-content">
 
-            <!-- Session alerts -->
             @if(session('success'))
             <div class="session-alert">
                 <div class="alert-success">
@@ -526,7 +519,6 @@
             </div>
             @endif
 
-            <!-- Page Header -->
             <div class="page-header">
                 <div>
                     <h1>Kelola Pengguna</h1>
@@ -555,7 +547,6 @@
                 </div>
             </div>
 
-            <!-- User Table -->
             <div class="table-card">
                 @if($users->count() > 0)
                 <div class="table-wrapper">
@@ -642,7 +633,6 @@
         </div>
     </div>
 
-    <!-- Modal Hapus -->
     <div class="modal-overlay" id="deleteModal">
         <div class="modal-box">
             <div class="modal-icon"><i class="fas fa-trash-can"></i></div>
@@ -729,7 +719,6 @@
             if (e.key === 'Escape') closeDeleteModal();
         });
 
-        // === Auto-hide session alerts ===
         setTimeout(function() {
             document.querySelectorAll('.session-alert').forEach(function(el) {
                 el.style.transition = 'all 0.4s ease';

@@ -468,26 +468,14 @@
                 <i class="fas fa-tags"></i> Kategori
                 <span class="link-badge green">{{ $categoryCount ?? 0 }}</span>
             </a>
-            <a href="#" class="nav-link">
+            <a href="{{ route('admin.users.index') }}" class="nav-link">
                 <i class="fas fa-users"></i> Pengguna
                 <span class="link-badge cyan">{{ $userCount ?? 0 }}</span>
             </a>
-            <a href="#" class="nav-link">
+
+            <a href="{{ route('admin.projects.index') }}" class="nav-link">
                 <i class="fas fa-folder-open"></i> Semua Project
                 <span class="link-badge amber">{{ $projectCount ?? 0 }}</span>
-            </a>
-
-            <div class="nav-section-title">Laporan</div>
-            <a href="#" class="nav-link">
-                <i class="fas fa-chart-pie"></i> Statistik
-            </a>
-            <a href="#" class="nav-link">
-                <i class="fas fa-file-export"></i> Ekspor Data
-            </a>
-
-            <div class="nav-section-title">Sistem</div>
-            <a href="#" class="nav-link">
-                <i class="fas fa-gear"></i> Pengaturan
             </a>
         </nav>
 

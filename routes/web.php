@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProjectModerationController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\UserController; // ✅ TAMBAHAN
+use App\Http\Controllers\Admin\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -119,10 +119,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // CATEGORY
     Route::resource('categories', CategoryController::class);
 
-    // ✅ USER MANAGEMENT (INI YANG KURANG TADI)
+    Route::patch('/categories/{category}/toggle', [CategoryController::class, 'toggle'])
+    ->name('categories.toggle');
+
+    // USER MANAGEMENT
     Route::resource('users', UserController::class);
 
-    // PROJECT MODERATION
+    // ✅ TAMBAHAN: LIHAT SEMUA PROJECT
+    Route::get('/projects', [ProjectModerationController::class, 'index'])
+        ->name('projects.index');
+
+    // PROJECT DELETE (opsional kalau nanti mau)
     Route::delete('/projects/{project}', [ProjectModerationController::class, 'destroy'])
         ->name('projects.destroy');
 

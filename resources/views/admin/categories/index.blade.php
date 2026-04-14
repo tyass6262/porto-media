@@ -10,7 +10,6 @@
     <style>
         :root {
             --bg-primary: #0a0f1a;
-            --bg-secondary: #111827;
             --card-bg: rgba(17, 24, 39, 0.65);
             --card-border: rgba(255, 255, 255, 0.08);
             --accent: #10b981;
@@ -45,7 +44,6 @@
             overflow-x: hidden;
         }
 
-        /* === Background === */
         .bg-layer {
             position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
         }
@@ -69,14 +67,14 @@
         }
         .grid-pattern {
             position: fixed; inset: 0; z-index: 1; pointer-events: none;
-            background-image: linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px);
+            background-image:
+                linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
             background-size: 60px 60px;
             mask-image: radial-gradient(ellipse at 70% 30%, black 20%, transparent 70%);
         }
 
-        /* ============================
-           SIDEBAR
-        ============================ */
+        /* ==================== SIDEBAR ==================== */
         .sidebar {
             position: fixed; left: 0; top: 0; bottom: 0;
             width: var(--sidebar-w); z-index: 100;
@@ -144,10 +142,21 @@
         .sidebar-user-info { flex: 1; min-width: 0; }
         .sidebar-user-name { font-size: 13px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .sidebar-user-role { font-size: 11.5px; color: var(--text-muted); }
+        .logout-btn {
+            background: none; border: none; cursor: pointer;
+            padding: 8px; border-radius: 8px;
+            color: var(--text-muted); font-size: 15px;
+            transition: all 0.2s; display: flex;
+            align-items: center; justify-content: center;
+        }
+        .logout-btn:hover { color: var(--danger); background: var(--danger-bg); }
+        .sidebar-overlay {
+            display: none; position: fixed; inset: 0; z-index: 90;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+        }
+        .sidebar-overlay.open { display: block; }
 
-        /* ============================
-           MAIN
-        ============================ */
+        /* ==================== MAIN ==================== */
         .main-wrapper {
             flex: 1; margin-left: var(--sidebar-w);
             position: relative; z-index: 10;
@@ -155,7 +164,8 @@
         }
         .topbar {
             position: sticky; top: 0; z-index: 50;
-            background: rgba(10,15,26,0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            background: rgba(10,15,26,0.75);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--card-border);
             padding: 0 32px; height: 64px;
             display: flex; align-items: center; justify-content: space-between;
@@ -168,27 +178,12 @@
             align-items: center; justify-content: center; transition: all 0.2s;
         }
         .mobile-menu-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.07); }
-
-        .breadcrumb-bar {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 13px; color: var(--text-muted);
-        }
+        .breadcrumb-bar { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
         .breadcrumb-bar a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
         .breadcrumb-bar a:hover { color: var(--accent); }
         .breadcrumb-bar i { font-size: 10px; opacity: 0.5; }
         .breadcrumb-bar .current { color: var(--text-secondary); font-weight: 500; }
 
-        .topbar-right { display: flex; align-items: center; gap: 8px; }
-        .topbar-btn {
-            width: 38px; height: 38px; border-radius: 10px;
-            background: rgba(255,255,255,0.04); border: 1px solid var(--input-border);
-            color: var(--text-muted); cursor: pointer; font-size: 14px;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s; position: relative;
-        }
-        .topbar-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.07); }
-
-        /* Page Content */
         .page-content { flex: 1; padding: 32px; }
 
         /* Page Header */
@@ -196,97 +191,14 @@
             display: flex; align-items: flex-end; justify-content: space-between;
             margin-bottom: 28px; gap: 16px; flex-wrap: wrap;
         }
-        .page-header h1 {
-            font-size: 26px; font-weight: 800; color: var(--text-primary);
-            letter-spacing: -0.5px; margin-bottom: 4px;
-        }
-        .page-header p { font-size: 14px; color: var(--text-muted); }
-        .page-header .count-badge {
+        .page-header h1 { font-size: 26px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; margin-bottom: 4px; }
+        .page-header p { font-size: 14.5px; color: var(--text-muted); }
+        .count-badge {
             display: inline-flex; align-items: center; gap: 6px;
             background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.15);
             color: var(--accent); font-size: 12.5px; font-weight: 600;
             padding: 4px 12px; border-radius: 20px; margin-top: 8px;
         }
-
-        /* Add Form Card */
-        .form-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
-            border-radius: 20px; padding: 28px;
-            margin-bottom: 24px;
-            animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
-        }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(16px); filter: blur(2px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
-        .form-card-header {
-            display: flex; align-items: center; gap: 10px;
-            margin-bottom: 20px;
-        }
-        .form-card-header i {
-            width: 32px; height: 32px; border-radius: 9px;
-            background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.2);
-            color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 14px;
-        }
-        .form-card-header span { font-size: 14px; font-weight: 700; color: var(--text-primary); }
-
-        .form-row {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-        }
-        .field-group { margin-bottom: 0; }
-        .field-group label {
-            display: block; font-size: 13px; font-weight: 600;
-            color: var(--text-secondary); margin-bottom: 8px; letter-spacing: 0.3px;
-        }
-        .field-group label .required { color: var(--danger); margin-left: 2px; }
-        .input-wrapper {
-            position: relative; display: flex; align-items: center;
-        }
-        .input-wrapper .input-icon {
-            position: absolute; left: 14px; font-size: 14px;
-            color: var(--text-muted); transition: color 0.3s; pointer-events: none; z-index: 2;
-        }
-        .field-input {
-            width: 100%; padding: 12px 14px 12px 42px;
-            background: var(--input-bg); border: 1.5px solid var(--input-border);
-            border-radius: 12px; color: var(--text-primary);
-            font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: all 0.3s; outline: none;
-        }
-        .field-input::placeholder { color: var(--text-muted); font-size: 13.5px; }
-        .field-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--input-focus), 0 0 20px -4px var(--accent-glow);
-            background: rgba(15,23,42,1);
-        }
-        .field-input.input-error { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,0.12); }
-        .field-error { font-size: 12px; color: #fca5a5; margin-top: 6px; display: flex; align-items: center; gap: 6px; }
-        .field-error i { font-size: 11px; }
-
-        .slug-hint {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 12px; color: var(--text-muted); margin-top: 6px;
-        }
-        .slug-hint i { font-size: 11px; }
-        .slug-hint button {
-            background: none; border: none; color: var(--cyan); cursor: pointer;
-            font-size: 12px; font-weight: 600; font-family: inherit; padding: 0; transition: color 0.2s;
-        }
-        .slug-hint button:hover { color: var(--accent-hover); text-decoration: underline; }
-
-        .form-actions-row {
-            display: flex; justify-content: flex-end; margin-top: 20px; gap: 10px;
-        }
-        .btn-reset {
-            padding: 11px 20px; border-radius: 10px;
-            background: rgba(255,255,255,0.04); border: 1.5px solid var(--input-border);
-            color: var(--text-secondary); font-size: 13.5px; font-weight: 600;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            cursor: pointer; transition: all 0.25s;
-        }
-        .btn-reset:hover { background: rgba(255,255,255,0.07); color: var(--text-primary); }
         .btn-add {
             display: inline-flex; align-items: center; gap: 8px;
             padding: 11px 22px; border-radius: 10px;
@@ -295,7 +207,7 @@
             font-size: 13.5px; font-weight: 700;
             font-family: 'Plus Jakarta Sans', sans-serif;
             cursor: pointer; transition: all 0.3s;
-            position: relative; overflow: hidden;
+            text-decoration: none; position: relative; overflow: hidden;
         }
         .btn-add::before {
             content: ''; position: absolute; top: 0; left: -100%;
@@ -306,7 +218,6 @@
         .btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 24px var(--accent-glow); }
         .btn-add:hover::before { left: 100%; }
         .btn-add:active { transform: translateY(0); }
-        .btn-add:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
         /* Toolbar */
         .toolbar {
@@ -327,7 +238,6 @@
         .search-box input::placeholder { color: var(--text-muted); }
         .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--input-focus); }
         .search-box input:focus + i { color: var(--accent); }
-
         .filter-chips { display: flex; gap: 6px; }
         .filter-chip {
             padding: 9px 16px; border-radius: 10px;
@@ -339,7 +249,7 @@
         .filter-chip:hover { color: var(--text-secondary); background: rgba(255,255,255,0.06); }
         .filter-chip.active { background: var(--accent-subtle); border-color: rgba(16,185,129,0.25); color: var(--accent); font-weight: 600; }
 
-        /* Category Table */
+        /* Table */
         .table-card {
             background: var(--card-bg);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -347,6 +257,10 @@
             border-radius: 20px; overflow: hidden;
             animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
             animation-delay: 0.1s;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); filter: blur(2px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
         }
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
@@ -367,7 +281,7 @@
         tbody tr:hover { background: rgba(255,255,255,0.02); }
         tbody tr:last-child td { border-bottom: none; }
 
-        .cat-name-cell { display: flex; align-items: center; gap: 12px; }
+        .cat-name-cell { display: flex; align-items: center; gap: 14px; }
         .cat-icon {
             width: 38px; height: 38px; border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
@@ -381,15 +295,13 @@
         .cat-name-text { font-weight: 600; color: var(--text-primary); }
         .cat-slug { font-size: 12px; color: var(--text-muted); margin-top: 2px; font-family: 'Courier New', monospace; }
 
-        /* Status Badge */
+        /* Status badge */
         .status-badge {
             display: inline-flex; align-items: center; gap: 6px;
             padding: 5px 12px; border-radius: 20px;
             font-size: 12px; font-weight: 600;
         }
-        .status-badge .dot {
-            width: 6px; height: 6px; border-radius: 50%;
-        }
+        .status-badge .dot { width: 6px; height: 6px; border-radius: 50%; }
         .status-active { background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.15); color: var(--accent); }
         .status-active .dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
         .status-inactive { background: rgba(255,255,255,0.03); border: 1px solid var(--input-border); color: var(--text-muted); }
@@ -401,24 +313,25 @@
         }
         .projects-count i { font-size: 12px; opacity: 0.6; }
 
-        .date-text { font-size: 13px; color: var(--text-muted); white-space: nowrap; }
-
         /* Action buttons */
-        .action-btns { display: flex; gap: 6px; }
+        .action-btns { display: flex; gap: 6px; justify-content: flex-end; }
         .btn-icon {
             width: 34px; height: 34px; border-radius: 8px;
             background: rgba(255,255,255,0.03); border: 1px solid var(--input-border);
             color: var(--text-muted); cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            font-size: 13px; transition: all 0.2s;
+            font-size: 13px; transition: all 0.2s; text-decoration: none;
         }
         .btn-icon:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
+        .btn-icon.toggle-active:hover { background: var(--amber-subtle); color: var(--amber); border-color: rgba(245,158,11,0.2); }
+        .btn-icon.toggle-inactive:hover { background: var(--accent-subtle); color: var(--accent); border-color: rgba(16,185,129,0.2); }
         .btn-icon.danger:hover { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,0.2); }
 
-        /* Empty State */
-        .empty-state {
-            text-align: center; padding: 60px 24px;
-        }
+        /* Toggle form inline */
+        .toggle-form { display: inline; }
+
+        /* Empty state */
+        .empty-state { text-align: center; padding: 60px 24px; }
         .empty-icon {
             width: 64px; height: 64px; border-radius: 18px;
             background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.15);
@@ -427,30 +340,11 @@
         }
         .empty-state h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
         .empty-state p { font-size: 13.5px; color: var(--text-muted); }
+        .no-results-inline { text-align: center; padding: 48px 24px; }
+        .no-results-inline i { font-size: 28px; color: var(--text-muted); opacity: 0.3; margin-bottom: 10px; display: block; }
+        .no-results-inline p { font-size: 14px; color: var(--text-muted); }
 
-        /* Validation Errors */
-        .validation-errors {
-            background: var(--danger-bg); border: 1px solid rgba(239,68,68,0.2);
-            border-radius: 12px; padding: 16px 20px; margin-bottom: 24px;
-            animation: shakeIn 0.5s ease;
-        }
-        .validation-errors .error-title {
-            font-size: 13px; font-weight: 700; color: #fca5a5; margin-bottom: 8px;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .validation-errors .error-title i { font-size: 14px; }
-        .validation-errors ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
-        .validation-errors ul li { font-size: 13px; color: #fca5a5; padding-left: 20px; position: relative; }
-        .validation-errors ul li::before {
-            content: ''; position: absolute; left: 4px; top: 50%;
-            width: 5px; height: 5px; border-radius: 50%; background: var(--danger);
-            transform: translateY(-50%);
-        }
-        @keyframes shakeIn {
-            0%{opacity:0;transform:translateX(-10px)} 25%{transform:translateX(6px)} 50%{transform:translateX(-4px)} 75%{transform:translateX(2px)} 100%{opacity:1;transform:translateX(0)}
-        }
-
-        /* Session Alert */
+        /* Session alerts */
         .session-alert { margin-bottom: 20px; }
         .alert-custom {
             background: var(--danger-bg); border: 1px solid rgba(239,68,68,0.2);
@@ -459,17 +353,18 @@
             font-size: 14px; color: #fca5a5; animation: shakeIn 0.5s ease;
         }
         .alert-custom i { color: var(--danger); font-size: 16px; flex-shrink: 0; }
-
-        /* Success Alert */
-        .alert-success {
+        .alert-success-custom {
             background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.2);
             border-radius: 12px; padding: 14px 18px;
             display: flex; align-items: center; gap: 12px;
             font-size: 14px; color: var(--accent-hover); animation: shakeIn 0.5s ease;
         }
-        .alert-success i { color: var(--accent); font-size: 16px; flex-shrink: 0; }
+        .alert-success-custom i { color: var(--accent); font-size: 16px; flex-shrink: 0; }
+        @keyframes shakeIn {
+            0%{opacity:0;transform:translateX(-10px)} 25%{transform:translateX(6px)} 50%{transform:translateX(-4px)} 75%{transform:translateX(2px)} 100%{opacity:1;transform:translateX(0)}
+        }
 
-        /* === Modal === */
+        /* Modal */
         .modal-overlay {
             position: fixed; inset: 0; z-index: 1000;
             background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
@@ -505,17 +400,7 @@
         .btn-delete-confirm { background: var(--danger); color: white; }
         .btn-delete-confirm:hover { background: #dc2626; box-shadow: 0 4px 16px rgba(239,68,68,0.3); }
 
-        /* Sidebar overlay */
-        .sidebar-overlay {
-            display: none; position: fixed; inset: 0; z-index: 90;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-        }
-        .sidebar-overlay.open { display: block; }
-
-        /* === Responsive === */
-        @media (max-width: 1024px) {
-            .form-row { grid-template-columns: 1fr; }
-        }
+        /* ==================== Responsive ==================== */
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -524,8 +409,8 @@
             .page-content { padding: 20px 16px; }
             .page-header { flex-direction: column; align-items: flex-start; }
             .topbar { padding: 0 16px; }
-            .form-card { padding: 20px; }
             .hide-mobile { display: none; }
+            .action-btns { gap: 4px; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
@@ -538,11 +423,8 @@
 </head>
 <body>
 
-    <!-- Background -->
     <div class="bg-layer"></div>
     <div class="grid-pattern"></div>
-
-    <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
     <!-- ==================== SIDEBAR ==================== -->
@@ -555,34 +437,35 @@
         <nav class="sidebar-nav">
             <div class="nav-section-title">Utama</div>
             <a href="{{ route('admin.dashboard') }}" class="nav-link">
-                <i class="fas fa-grid-2"></i> Dashboard
+                <i class="fas fa-table-cells"></i> Dashboard
             </a>
             <div class="nav-section-title">Manajemen</div>
             <a href="{{ route('admin.categories.index') }}" class="nav-link active">
                 <i class="fas fa-tags"></i> Kategori
                 <span class="link-badge green">{{ $categories->count() }}</span>
             </a>
-            <a href="#" class="nav-link">
+            <a href="{{ route('admin.users.index') }}" class="nav-link">
                 <i class="fas fa-users"></i> Pengguna
+                <span class="link-badge cyan">{{ $userCount ?? 0 }}</span>
             </a>
-            <a href="#" class="nav-link">
+            <a href="{{ route('admin.projects.index') }}" class="nav-link">
                 <i class="fas fa-folder-open"></i> Semua Project
-            </a>
-            <div class="nav-section-title">Sistem</div>
-            <a href="#" class="nav-link">
-                <i class="fas fa-gear"></i> Pengaturan
+                <span class="link-badge amber">{{ $projectCount ?? 0 }}</span>
             </a>
         </nav>
         <div class="sidebar-footer">
             <div class="sidebar-user">
                 <div class="sidebar-avatar">A</div>
                 <div class="sidebar-user-info">
-                    <div class="sidebar-user-name">{{ auth()->user()->name ?? 'Admin' }}</div>
+                    <div class="sidebar-user-name">{{ optional(auth()->user())->name ?? 'Admin' }}</div>
                     <div class="sidebar-user-role">Super Admin</div>
                 </div>
-                <a href="{{ route('logout') }}" class="nav-link" style="margin:0;padding:8px;border-radius:8px;" title="Logout">
-                    <i class="fas fa-right-from-bracket"></i>
-                </a>
+                <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+                    @csrf
+                    <button type="submit" class="logout-btn" title="Logout" aria-label="Logout">
+                        <i class="fas fa-right-from-bracket"></i>
+                    </button>
+                </form>
             </div>
         </div>
     </aside>
@@ -601,7 +484,7 @@
                 </div>
             </div>
             <div class="topbar-right">
-                <button class="topbar-btn" title="Refresh" aria-label="Refresh" onclick="location.reload()">
+                <button title="Refresh" aria-label="Refresh" onclick="location.reload()" style="width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid var(--input-border);color:var(--text-muted);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">
                     <i class="fas fa-rotate-right"></i>
                 </button>
             </div>
@@ -612,7 +495,7 @@
             <!-- Session alerts -->
             @if(session('success'))
             <div class="session-alert">
-                <div class="alert-success">
+                <div class="alert-success-custom">
                     <i class="fas fa-circle-check"></i>
                     <span>{{ session('success') }}</span>
                 </div>
@@ -632,91 +515,16 @@
             <div class="page-header">
                 <div>
                     <h1>Kelola Kategori</h1>
-                    <p>Tambah dan kelola kategori untuk mengorganisir project</p>
+                    <p>Tambah, aktifkan/nonaktifkan, dan hapus kategori project</p>
                     <div class="count-badge">
                         <i class="fas fa-tags"></i>
                         {{ $categories->count() }} kategori
                     </div>
                 </div>
-            </div>
-
-            <!-- Validation Errors -->
-            @if($errors->any())
-            <div class="validation-errors">
-                <div class="error-title">
-                    <i class="fas fa-triangle-exclamation"></i>
-                    Mohon perbaiki {{ $errors->count() }} kesalahan berikut
-                </div>
-                <ul>
-                    @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
-
-            <!-- Add Form -->
-            <div class="form-card">
-                <div class="form-card-header">
-                    <i><i class="fas fa-plus"></i></i>
-                    <span>Tambah Kategori Baru</span>
-                </div>
-                <form action="{{ route('admin.categories.store') }}" method="POST" id="addForm">
-                    @csrf
-                    <div class="form-row">
-                        <div class="field-group">
-                            <label for="name">Nama Kategori <span class="required">*</span></label>
-                            <div class="input-wrapper">
-                                <i class="fas fa-tag input-icon"></i>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    class="field-input {{ $errors->has('name') ? 'input-error' : '' }}"
-                                    placeholder="Contoh: Web Development"
-                                    value="{{ old('name') }}"
-                                    required
-                                    maxlength="60"
-                                    autocomplete="off"
-                                >
-                            </div>
-                            @if($errors->has('name'))
-                            <div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ $errors->first('name') }}</div>
-                            @endif
-                        </div>
-                        <div class="field-group">
-                            <label for="slug">Slug</label>
-                            <div class="input-wrapper">
-                                <i class="fas fa-link input-icon"></i>
-                                <input
-                                    type="text"
-                                    id="slug"
-                                    name="slug"
-                                    class="field-input {{ $errors->has('slug') ? 'input-error' : '' }}"
-                                    placeholder="web-development"
-                                    value="{{ old('slug') }}"
-                                    maxlength="80"
-                                    autocomplete="off"
-                                >
-                            </div>
-                            <div class="slug-hint">
-                                <i class="fas fa-circle-info"></i>
-                                <span>Otomatis dari nama.</span>
-                                <button type="button" onclick="regenerateSlug()">Regenerasi</button>
-                            </div>
-                            @if($errors->has('slug'))
-                            <div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ $errors->first('slug') }}</div>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="form-actions-row">
-                        <button type="reset" class="btn-reset" onclick="resetForm()">Reset</button>
-                        <button type="submit" class="btn-add" id="btnAdd">
-                            <i class="fas fa-plus"></i>
-                            <span id="btnAddText">Tambah Kategori</span>
-                        </button>
-                    </div>
-                </form>
+                <a href="{{ route('admin.categories.create') }}" class="btn-add">
+                    <i class="fas fa-plus"></i>
+                    Tambah Kategori
+                </a>
             </div>
 
             <!-- Toolbar -->
@@ -732,21 +540,24 @@
                 </div>
             </div>
 
-            <!-- Category Table -->
+            <!-- Table -->
             <div class="table-card">
                 @if($categories->count() > 0)
                 <div class="table-wrapper">
                     <table>
                         <thead>
                             <tr>
-                                <th style="width:40%">Kategori</th>
-                                <th style="width:15%">Status</th>
-                                <th class="hide-mobile" style="width:15%">Project</th>
-                                <th class="hide-mobile" style="width:15%">Dibuat</th>
+                                <th style="width:35%">Kategori</th>
+                                <th style="width:12%">Status</th>
+                                <th class="hide-mobile" style="width:13%">Project</th>
                                 <th style="width:15%; text-align:right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="categoryTable">
+                            @php
+                                $catColors = ['green','cyan','amber','rose','indigo'];
+                                $catIcons = ['code','palette','globe','rocket','chart-line','cube','database','layer-group','puzzle-piece','wand-magic-sparkles'];
+                            @endphp
                             @foreach($categories as $cat)
                             <tr
                                 data-name="{{ strtolower($cat->name) }}"
@@ -754,8 +565,8 @@
                             >
                                 <td>
                                     <div class="cat-name-cell">
-                                        <div class="cat-icon {{ cycle(['green','cyan','amber','rose','indigo'], $loop->index) }}">
-                                            <i class="fas fa-{{ cycle(['code','palette','globe','rocket','chart-line','cube','database','layer-group'], $loop->index) }}"></i>
+                                        <div class="cat-icon {{ $catColors[$loop->index % count($catColors)] }}">
+                                            <i class="fas fa-{{ $catIcons[$loop->index % count($catIcons)] }}"></i>
                                         </div>
                                         <div>
                                             <div class="cat-name-text">{{ $cat->name }}</div>
@@ -772,25 +583,29 @@
                                 <td class="hide-mobile">
                                     <div class="projects-count">
                                         <i class="fas fa-folder"></i>
-                                        {{ $cat->projects_count ?? $cat->projects->count() ?? 0 }}
+                                        {{ $cat->projects_count }} project
                                     </div>
                                 </td>
-                                <td class="hide-mobile">
-                                    <span class="date-text">{{ $cat->created_at->format('d M Y') }}</span>
-                                </td>
                                 <td>
-                                    <div class="action-btns" style="justify-content:flex-end">
-                                        <button
-                                            class="btn-icon"
-                                            title="Edit kategori"
-                                            aria-label="Edit"
-                                            onclick="window.location.href='{{ route('admin.categories.edit', $cat->id) }}'"
-                                        >
+                                    <div class="action-btns">
+                                        <a href="{{ route('admin.categories.edit', $cat->id) }}" class="btn-icon" title="Edit" aria-label="Edit">
                                             <i class="fas fa-pen-to-square"></i>
-                                        </button>
+                                        </a>
+                                        <form class="toggle-form" action="{{ route('admin.categories.toggle', $cat->id) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button
+                                                type="submit"
+                                                class="btn-icon {{ $cat->is_active ? 'toggle-active' : 'toggle-inactive' }}"
+                                                title="{{ $cat->is_active ? 'Nonaktifkan' : 'Aktifkan' }}"
+                                                aria-label="Toggle status"
+                                            >
+                                                <i class="fas fa-{{ $cat->is_active ? 'toggle-on' : 'toggle-off' }}"></i>
+                                            </button>
+                                        </form>
                                         <button
                                             class="btn-icon danger"
-                                            title="Hapus kategori"
+                                            title="Hapus"
                                             aria-label="Hapus"
                                             onclick="confirmDelete('{{ $cat->name }}', '{{ route('admin.categories.destroy', $cat->id) }}')"
                                         >
@@ -807,7 +622,7 @@
                 <div class="empty-state">
                     <div class="empty-icon"><i class="fas fa-tags"></i></div>
                     <h3>Belum ada kategori</h3>
-                    <p>Mulai tambahkan kategori pertama menggunakan form di atas.</p>
+                    <p>Mulai tambahkan kategori pertama menggunakan tombol di atas.</p>
                 </div>
                 @endif
             </div>
@@ -831,89 +646,46 @@
     </div>
 
     <script>
-        // === Slug auto-generate dari nama ===
-        const nameInput = document.getElementById('name');
-        const slugInput = document.getElementById('slug');
+        // === Search ===
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
 
-        function toSlug(text) {
-            return text
-                .toLowerCase()
-                .replace(/[^a-z0-9\s-]/g, '')
-                .replace(/\s+/g, '-')
-                .replace(/-+/g, '-')
-                .replace(/^-|-$/g, '');
-        }
-
-        nameInput.addEventListener('input', function() {
-            if (!slugInput.dataset.manual) {
-                slugInput.value = toSlug(this.value);
-            }
-        });
-
-        slugInput.addEventListener('input', function() {
-            this.dataset.manual = this.value !== toSlug(nameInput.value) ? '1' : '';
-        });
-
-        function regenerateSlug() {
-            slugInput.value = toSlug(nameInput.value);
-            slugInput.dataset.manual = '';
-        }
-
-        function resetForm() {
-            slugInput.dataset.manual = '';
-        }
-
-        // === Focus glow ===
-        document.querySelectorAll('.input-wrapper .field-input').forEach(input => {
-            input.addEventListener('focus', () => {
-                const icon = input.closest('.input-wrapper').querySelector('.input-icon');
-                if (icon) icon.style.color = 'var(--accent)';
-            });
-            input.addEventListener('blur', () => {
-                const icon = input.closest('.input-wrapper').querySelector('.input-icon');
-                if (icon) icon.style.color = '';
-            });
-        });
-
-        // === Loading state submit ===
-        document.getElementById('addForm').addEventListener('submit', function() {
-            const btn = document.getElementById('btnAdd');
-            const txt = document.getElementById('btnAddText');
-            btn.disabled = true;
-            txt.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:6px"></i>Menyimpan...';
-        });
-
-        // === Search filter ===
-        document.getElementById('searchInput').addEventListener('input', function() {
-            const query = this.value.toLowerCase().trim();
-            document.querySelectorAll('#categoryTable tr').forEach(row => {
-                const name = row.dataset.name || '';
-                row.style.display = name.includes(query) ? '' : 'none';
-            });
-        });
-
-        // === Status filter ===
-        let currentFilter = 'all';
+        // === Filter ===
+        var currentFilter = 'all';
         function setFilter(filter, btn) {
             currentFilter = filter;
-            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.filter-chip').forEach(function(c) { c.classList.remove('active'); });
             btn.classList.add('active');
             applyFilters();
         }
 
         function applyFilters() {
-            const query = document.getElementById('searchInput').value.toLowerCase().trim();
-            document.querySelectorAll('#categoryTable tr').forEach(row => {
-                const name = row.dataset.name || '';
-                const status = row.dataset.status || '';
-                const matchSearch = name.includes(query);
-                const matchFilter = currentFilter === 'all' || status === currentFilter;
-                row.style.display = (matchSearch && matchFilter) ? '' : 'none';
-            });
-        }
+            var query = document.getElementById('searchInput').value.toLowerCase().trim();
+            var rows = document.querySelectorAll('#categoryTable tr');
+            var visibleCount = 0;
 
-        // Update search to also respect filter
-        document.getElementById('searchInput').addEventListener('input', applyFilters);
+            rows.forEach(function(row) {
+                var name = row.dataset.name || '';
+                var status = row.dataset.status || '';
+                var matchSearch = name.includes(query);
+                var matchFilter = currentFilter === 'all' || status === currentFilter;
+                var show = matchSearch && matchFilter;
+                row.style.display = show ? '' : 'none';
+                if (show) visibleCount++;
+            });
+
+            var noResults = document.getElementById('noResults');
+            if (visibleCount === 0 && rows.length > 0) {
+                if (!noResults) {
+                    noResults = document.createElement('tr');
+                    noResults.id = 'noResults';
+                    noResults.innerHTML = '<td colspan="4"><div class="no-results-inline"><i class="fas fa-search"></i><p>Tidak ada kategori yang cocok.</p></div></td>';
+                    document.getElementById('categoryTable').appendChild(noResults);
+                }
+                noResults.style.display = '';
+            } else if (noResults) {
+                noResults.style.display = 'none';
+            }
+        }
 
         // === Modal Hapus ===
         function confirmDelete(name, url) {
@@ -921,15 +693,12 @@
             document.getElementById('deleteForm').action = url;
             document.getElementById('deleteModal').classList.add('open');
         }
-
         function closeDeleteModal() {
             document.getElementById('deleteModal').classList.remove('open');
         }
-
         document.getElementById('deleteModal').addEventListener('click', function(e) {
             if (e.target === this) closeDeleteModal();
         });
-
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeDeleteModal();
         });
@@ -939,7 +708,6 @@
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('sidebarOverlay').classList.toggle('open');
         }
-
         window.addEventListener('resize', function() {
             if (window.innerWidth > 768) {
                 document.getElementById('sidebar').classList.remove('open');
@@ -947,13 +715,13 @@
             }
         });
 
-        // === Auto-hide session alerts ===
-        setTimeout(() => {
-            document.querySelectorAll('.session-alert').forEach(el => {
+        // === Auto-hide alerts ===
+        setTimeout(function() {
+            document.querySelectorAll('.session-alert').forEach(function(el) {
                 el.style.transition = 'all 0.4s ease';
                 el.style.opacity = '0';
                 el.style.transform = 'translateY(-10px)';
-                setTimeout(() => el.remove(), 400);
+                setTimeout(function() { el.remove(); }, 400);
             });
         }, 5000);
     </script>

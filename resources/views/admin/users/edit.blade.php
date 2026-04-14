@@ -461,11 +461,7 @@
                 <i class="fas fa-folder-open"></i> Semua Project
                 <span class="link-badge amber">{{ $projectCount ?? 0 }}</span>
             </a>
-            <div class="nav-section-title">Sistem</div>
-            <a href="#" class="nav-link">
-                <i class="fas fa-gear"></i> Pengaturan
-            </a>
-        </nav>
+            </nav>
         <div class="sidebar-footer">
             <div class="sidebar-user">
                 <div class="sidebar-avatar">A</div>

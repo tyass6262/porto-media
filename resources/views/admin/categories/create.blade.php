@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Pengguna</title>
+    <title>Tambah Kategori</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -74,7 +74,6 @@
             mask-image: radial-gradient(ellipse at 70% 30%, black 20%, transparent 70%);
         }
 
-        /* ==================== SIDEBAR ==================== */
         .sidebar {
             position: fixed; left: 0; top: 0; bottom: 0;
             width: var(--sidebar-w); z-index: 100;
@@ -156,7 +155,6 @@
         }
         .sidebar-overlay.open { display: block; }
 
-        /* ==================== MAIN ==================== */
         .main-wrapper {
             flex: 1; margin-left: var(--sidebar-w);
             position: relative; z-index: 10;
@@ -186,20 +184,10 @@
 
         .page-content { flex: 1; padding: 32px; }
 
-        /* Breadcrumb + Header */
-        .page-breadcrumb {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 13px; color: var(--text-muted); margin-bottom: 20px;
-        }
-        .page-breadcrumb a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
-        .page-breadcrumb a:hover { color: var(--accent); }
-        .page-breadcrumb i { font-size: 10px; opacity: 0.5; }
-        .page-breadcrumb .current { color: var(--text-secondary); font-weight: 500; }
         .page-header { margin-bottom: 32px; }
         .page-header h1 { font-size: 26px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; margin-bottom: 6px; }
         .page-header p { font-size: 14.5px; color: var(--text-muted); }
 
-        /* Form Card */
         .form-card {
             background: var(--card-bg);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -221,13 +209,9 @@
             display: flex; align-items: center; justify-content: center; font-size: 15px;
         }
         .icon-green { background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.2); color: var(--accent); }
-        .icon-cyan { background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.2); color: var(--cyan); }
-        .icon-amber { background: var(--amber-subtle); border: 1px solid rgba(245,158,11,0.2); color: var(--amber); }
         .form-card-header span { font-size: 15px; font-weight: 700; color: var(--text-primary); }
 
-        /* Fields */
         .field-group { margin-bottom: 22px; }
-        .field-group:last-of-type { margin-bottom: 0; }
         .field-group label {
             display: block; font-size: 13px; font-weight: 600;
             color: var(--text-secondary); margin-bottom: 8px; letter-spacing: 0.3px;
@@ -255,41 +239,19 @@
         .field-error { font-size: 12px; color: #fca5a5; margin-top: 6px; display: flex; align-items: center; gap: 6px; }
         .field-error i { font-size: 11px; }
 
-        .toggle-password {
-            position: absolute; right: 14px; background: none; border: none;
-            color: var(--text-muted); cursor: pointer; font-size: 15px;
-            padding: 4px; transition: color 0.2s; z-index: 2;
-        }
-        .toggle-password:hover { color: var(--text-secondary); }
-
-        /* Password strength */
-        .strength-bar-container { display: flex; gap: 4px; margin-top: 8px; }
-        .strength-segment {
-            flex: 1; height: 3px; border-radius: 2px;
-            background: rgba(255,255,255,0.06); transition: background 0.3s;
-        }
-        .strength-label { font-size: 11.5px; margin-top: 5px; color: var(--text-muted); transition: color 0.3s; min-height: 16px; }
-
-        /* Select */
-        .select-wrapper { position: relative; }
-        .select-wrapper::after {
-            content: '\f078'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
-            position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-            font-size: 12px; color: var(--text-muted); pointer-events: none;
-        }
-        select.field-input { appearance: none; -webkit-appearance: none; padding-right: 44px; cursor: pointer; }
-        select.field-input option { background: #1e293b; color: var(--text-primary); padding: 8px; }
-
-        /* Field hint */
-        .field-hint {
+        .slug-hint {
             display: flex; align-items: center; gap: 6px;
             font-size: 12px; color: var(--text-muted); margin-top: 6px;
         }
-        .field-hint i { font-size: 11px; }
+        .slug-hint i { font-size: 11px; }
+        .slug-hint button {
+            background: none; border: none; color: var(--cyan); cursor: pointer;
+            font-size: 12px; font-weight: 600; font-family: inherit; padding: 0; transition: color 0.2s;
+        }
+        .slug-hint button:hover { color: var(--accent-hover); text-decoration: underline; }
 
-        /* Form actions */
         .form-actions-row {
-            display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px;
+            display: flex; justify-content: flex-end; gap: 12px; margin-top: 28px;
             padding-top: 24px; border-top: 1px solid var(--card-border);
         }
         .btn-cancel {
@@ -322,7 +284,31 @@
         .btn-submit:active { transform: translateY(0); }
         .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
-        /* Validation errors */
+        .slug-preview {
+            margin-top: 24px; padding: 18px 20px;
+            background: rgba(6,182,212,0.04);
+            border: 1px solid rgba(6,182,212,0.12);
+            border-radius: 14px;
+            display: flex; align-items: center; gap: 14px;
+            transition: all 0.3s;
+        }
+        .slug-preview.has-value { border-color: rgba(6,182,212,0.25); }
+        .slug-preview-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; color: var(--cyan); flex-shrink: 0;
+        }
+        .slug-preview-info { flex: 1; min-width: 0; }
+        .slug-preview-label { font-size: 11.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .slug-preview-value {
+            font-size: 14px; font-weight: 600; color: var(--cyan);
+            font-family: 'Courier New', monospace;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            min-height: 20px;
+        }
+        .slug-preview-value.empty { color: var(--text-muted); font-weight: 400; font-style: italic; }
+
         .validation-errors {
             background: var(--danger-bg); border: 1px solid rgba(239,68,68,0.2);
             border-radius: 12px; padding: 16px 20px; margin-bottom: 24px;
@@ -344,7 +330,6 @@
             0%{opacity:0;transform:translateX(-10px)} 25%{transform:translateX(6px)} 50%{transform:translateX(-4px)} 75%{transform:translateX(2px)} 100%{opacity:1;transform:translateX(0)}
         }
 
-        /* Session alerts */
         .session-alert { margin-bottom: 20px; }
         .alert-custom {
             background: var(--danger-bg); border: 1px solid rgba(239,68,68,0.2);
@@ -354,7 +339,6 @@
         }
         .alert-custom i { color: var(--danger); font-size: 16px; flex-shrink: 0; }
 
-        /* ==================== Responsive ==================== */
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -383,7 +367,6 @@
     <div class="grid-pattern"></div>
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <!-- ==================== SIDEBAR ==================== -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo"><i class="fas fa-shield-halved"></i></div>
@@ -396,19 +379,19 @@
                 <i class="fas fa-table-cells"></i> Dashboard
             </a>
             <div class="nav-section-title">Manajemen</div>
-            <a href="{{ route('admin.categories.index') }}" class="nav-link">
+            <a href="{{ route('admin.categories.index') }}" class="nav-link active">
                 <i class="fas fa-tags"></i> Kategori
                 <span class="link-badge green">{{ $categoryCount ?? 0 }}</span>
             </a>
-            <a href="{{ route('admin.users.index') }}" class="nav-link active">
+            <a href="{{ route('admin.users.index') }}" class="nav-link">
                 <i class="fas fa-users"></i> Pengguna
                 <span class="link-badge cyan">{{ $userCount ?? 0 }}</span>
             </a>
-            <a href="#" class="nav-link">
+            <a href="{{ route('admin.projects.index') }}" class="nav-link">
                 <i class="fas fa-folder-open"></i> Semua Project
                 <span class="link-badge amber">{{ $projectCount ?? 0 }}</span>
             </a>
-        </nav>
+           </nav>
         <div class="sidebar-footer">
             <div class="sidebar-user">
                 <div class="sidebar-avatar">A</div>
@@ -426,7 +409,6 @@
         </div>
     </aside>
 
-    <!-- ==================== MAIN ==================== -->
     <div class="main-wrapper">
         <header class="topbar">
             <div class="topbar-left">
@@ -436,7 +418,7 @@
                 <div class="breadcrumb-bar">
                     <a href="{{ route('admin.dashboard') }}">Dashboard</a>
                     <i class="fas fa-chevron-right"></i>
-                    <a href="{{ route('admin.users.index') }}">Pengguna</a>
+                    <a href="{{ route('admin.categories.index') }}">Kategori</a>
                     <i class="fas fa-chevron-right"></i>
                     <span class="current">Tambah</span>
                 </div>
@@ -445,7 +427,6 @@
 
         <div class="page-content">
 
-            <!-- Session Error -->
             @if(session('error'))
             <div class="session-alert">
                 <div class="alert-custom">
@@ -455,13 +436,11 @@
             </div>
             @endif
 
-            <!-- Page Header -->
             <div class="page-header">
-                <h1>Tambah Pengguna Baru</h1>
-                <p>Isi data berikut untuk membuat akun pengguna baru</p>
+                <h1>Tambah Kategori</h1>
+                <p>Masukkan nama kategori baru untuk mengorganisir project</p>
             </div>
 
-            <!-- Validation Errors -->
             @if($errors->any())
             <div class="validation-errors">
                 <div class="error-title">
@@ -476,30 +455,30 @@
             </div>
             @endif
 
-            <!-- Form: Data Akun -->
+            <!-- Form -->
             <div class="form-card">
                 <div class="form-card-header">
-                    <i class="icon-green"><i class="fas fa-user-plus"></i></i>
-                    <span>Data Akun</span>
+                    <i class="icon-green"><i class="fas fa-plus"></i></i>
+                    <span>Kategori Baru</span>
                 </div>
 
-                <form action="{{ route('admin.users.store') }}" method="POST" id="userForm">
+                <form action="{{ route('admin.categories.store') }}" method="POST" id="addForm">
                     @csrf
 
                     <div class="field-group">
-                        <label for="name">Nama Lengkap <span class="required">*</span></label>
+                        <label for="name">Nama Kategori <span class="required">*</span></label>
                         <div class="input-wrapper">
-                            <i class="fas fa-user input-icon"></i>
+                            <i class="fas fa-tag input-icon"></i>
                             <input
                                 type="text"
                                 id="name"
                                 name="name"
                                 class="field-input {{ $errors->has('name') ? 'input-error' : '' }}"
-                                placeholder="Contoh: Budi Santoso"
+                                placeholder="Contoh: Web Development"
                                 value="{{ old('name') }}"
                                 required
-                                maxlength="100"
-                                autocomplete="name"
+                                maxlength="60"
+                                autocomplete="off"
                             >
                         </div>
                         @if($errors->has('name'))
@@ -507,88 +486,28 @@
                         @endif
                     </div>
 
-                    <div class="field-group">
-                        <label for="email">Email <span class="required">*</span></label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-envelope input-icon"></i>
-                            <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                class="field-input {{ $errors->has('email') ? 'input-error' : '' }}"
-                                placeholder="nama@email.com"
-                                value="{{ old('email') }}"
-                                required
-                                maxlength="150"
-                                autocomplete="email"
-                            >
+                    <!-- Slug Preview -->
+                    <div class="slug-preview" id="slugPreview">
+                        <div class="slug-preview-icon"><i class="fas fa-link"></i></div>
+                        <div class="slug-preview-info">
+                            <div class="slug-preview-label">Slug Preview</div>
+                            <div class="slug-preview-value empty" id="slugPreviewValue">Belum ada nama</div>
                         </div>
-                        @if($errors->has('email'))
-                        <div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ $errors->first('email') }}</div>
-                        @endif
                     </div>
 
-                    <div class="field-group">
-                        <label for="password">Password <span class="required">*</span></label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-key input-icon"></i>
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                class="field-input {{ $errors->has('password') ? 'input-error' : '' }}"
-                                placeholder="Minimal 8 karakter"
-                                required
-                                minlength="8"
-                                autocomplete="new-password"
-                            >
-                            <button type="button" class="toggle-password" aria-label="Toggle password" onclick="togglePassword('password', 'eyeIcon1')">
-                                <i class="fas fa-eye" id="eyeIcon1"></i>
-                            </button>
-                        </div>
-                        <div class="strength-bar-container">
-                            <div class="strength-segment" id="seg1"></div>
-                            <div class="strength-segment" id="seg2"></div>
-                            <div class="strength-segment" id="seg3"></div>
-                            <div class="strength-segment" id="seg4"></div>
-                        </div>
-                        <div class="strength-label" id="strengthLabel"></div>
-                        @if($errors->has('password'))
-                        <div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ $errors->first('password') }}</div>
-                        @endif
-                    </div>
-
-                    <div class="field-group">
-                        <label for="password_confirmation">Konfirmasi Password <span class="required">*</span></label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-lock input-icon"></i>
-                            <input
-                                type="password"
-                                id="password_confirmation"
-                                name="password_confirmation"
-                                class="field-input {{ $errors->has('password_confirmation') ? 'input-error' : '' }}"
-                                placeholder="Ulangi password"
-                                required
-                                autocomplete="new-password"
-                            >
-                            <button type="button" class="toggle-password" aria-label="Toggle password" onclick="togglePassword('password_confirmation', 'eyeIcon2')">
-                                <i class="fas fa-eye" id="eyeIcon2"></i>
-                            </button>
-                        </div>
-                        <div class="strength-label" id="matchLabel" style="color: var(--text-muted);"></div>
-                        @if($errors->has('password_confirmation'))
-                        <div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ $errors->first('password_confirmation') }}</div>
-                        @endif
+                    <div class="slug-hint">
+                        <i class="fas fa-circle-info"></i>
+                        <span>Slug dibuat otomatis dari nama. Tidak bisa diedit manual di halaman ini.</span>
                     </div>
 
                     <div class="form-actions-row">
-                        <a href="{{ route('admin.users.index') }}" class="btn-cancel">
+                        <a href="{{ route('admin.categories.index') }}" class="btn-cancel">
                             <i class="fas fa-arrow-left"></i>
                             Kembali
                         </a>
                         <button type="submit" class="btn-submit" id="btnSubmit">
                             <i class="fas fa-check"></i>
-                            <span id="btnText">Simpan Pengguna</span>
+                            <span id="btnText">Simpan Kategori</span>
                         </button>
                     </div>
                 </form>
@@ -598,81 +517,37 @@
     </div>
 
     <script>
-        // === Toggle Password ===
-        function togglePassword(inputId, iconId) {
-            var input = document.getElementById(inputId);
-            var icon = document.getElementById(iconId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
+        // === Slug preview ===
+        var nameInput = document.getElementById('name');
+        var slugPreview = document.getElementById('slugPreview');
+        var slugPreviewValue = document.getElementById('slugPreviewValue');
+
+        function toSlug(text) {
+            return text
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+        }
+
+        nameInput.addEventListener('input', function() {
+            var val = this.value.trim();
+            if (val.length > 0) {
+                slugPreviewValue.textContent = toSlug(val);
+                slugPreviewValue.classList.remove('empty');
+                slugPreview.classList.add('has-value');
             } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
+                slugPreviewValue.textContent = 'Belum ada nama';
+                slugPreviewValue.classList.add('empty');
+                slugPreview.classList.remove('has-value');
             }
-        }
-
-        // === Password Strength ===
-        var passwordInput = document.getElementById('password');
-        var segments = [
-            document.getElementById('seg1'),
-            document.getElementById('seg2'),
-            document.getElementById('seg3'),
-            document.getElementById('seg4')
-        ];
-        var strengthLabel = document.getElementById('strengthLabel');
-        var strengthLevels = [
-            { label: '', color: '' },
-            { label: 'Lemah', color: '#ef4444' },
-            { label: 'Cukup', color: '#f59e0b' },
-            { label: 'Kuat', color: '#10b981' },
-            { label: 'Sangat Kuat', color: '#06b6d4' }
-        ];
-
-        function checkStrength(password) {
-            var score = 0;
-            if (password.length >= 8) score++;
-            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
-            if (/\d/.test(password)) score++;
-            if (/[^a-zA-Z0-9]/.test(password)) score++;
-            return score;
-        }
-
-        passwordInput.addEventListener('input', function() {
-            var val = this.value;
-            var score = val.length === 0 ? 0 : checkStrength(val);
-            segments.forEach(function(seg, i) {
-                seg.style.background = i < score ? strengthLevels[score].color : 'rgba(255,255,255,0.06)';
-            });
-            strengthLabel.textContent = strengthLevels[score].label;
-            strengthLabel.style.color = strengthLevels[score].color || 'var(--text-muted)';
-            checkMatch();
         });
 
-        // === Password Match ===
-        var confirmInput = document.getElementById('password_confirmation');
-        var matchLabel = document.getElementById('matchLabel');
-
-        function checkMatch() {
-            var pass = passwordInput.value;
-            var confirm = confirmInput.value;
-            if (confirm.length === 0) {
-                matchLabel.textContent = '';
-                confirmInput.classList.remove('input-error');
-                return;
-            }
-            if (pass === confirm) {
-                matchLabel.textContent = 'Password cocok';
-                matchLabel.style.color = 'var(--accent)';
-                confirmInput.classList.remove('input-error');
-            } else {
-                matchLabel.textContent = 'Password tidak cocok';
-                matchLabel.style.color = 'var(--danger)';
-                confirmInput.classList.add('input-error');
-            }
+        // Trigger dari old value
+        if (nameInput.value.trim()) {
+            nameInput.dispatchEvent(new Event('input'));
         }
-        confirmInput.addEventListener('input', checkMatch);
 
         // === Focus glow ===
         document.querySelectorAll('.input-wrapper .field-input').forEach(function(input) {
@@ -687,15 +562,7 @@
         });
 
         // === Loading state ===
-        document.getElementById('userForm').addEventListener('submit', function(e) {
-            if (passwordInput.value !== confirmInput.value) {
-                e.preventDefault();
-                matchLabel.textContent = 'Password tidak cocok';
-                matchLabel.style.color = 'var(--danger)';
-                confirmInput.classList.add('input-error');
-                confirmInput.focus();
-                return;
-            }
+        document.getElementById('addForm').addEventListener('submit', function() {
             var btn = document.getElementById('btnSubmit');
             var txt = document.getElementById('btnText');
             btn.disabled = true;
@@ -713,6 +580,19 @@
                 document.getElementById('sidebarOverlay').classList.remove('open');
             }
         });
+
+        // === Auto-hide alerts ===
+        setTimeout(function() {
+            document.querySelectorAll('.session-alert').forEach(function(el) {
+                el.style.transition = 'all 0.4s ease';
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(-10px)';
+                setTimeout(function() { el.remove(); }, 400);
+            });
+        }, 5000);
+
+        // === Auto-focus name input ===
+        nameInput.focus();
     </script>
 </body>
 </html>
