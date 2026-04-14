@@ -6,10 +6,21 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 
+// USER
 use App\Http\Controllers\User\ProjectController;
+
+// ADMIN
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProjectModerationController;
 use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UserController; // ✅ TAMBAHAN
+
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/login', function () {
     return view('auth.login');
@@ -21,7 +32,7 @@ Route::post('/login', function (Request $request) {
 
     if (Auth::attempt($credentials)) {
 
-        if(auth()->user()->role->slug == 'admin'){
+        if (auth()->user()->role->slug == 'admin') {
             return redirect('/admin/dashboard');
         }
 
@@ -29,7 +40,6 @@ Route::post('/login', function (Request $request) {
     }
 
     return back()->with('error', 'Login gagal');
-
 });
 
 Route::get('/register', function () {
@@ -48,7 +58,7 @@ Route::post('/register', function (Request $request) {
         'name' => $request->name,
         'email' => $request->email,
         'password' => bcrypt($request->password),
-        'role_id' => 2 
+        'role_id' => 2
     ]);
 
     Auth::login($user);
@@ -56,16 +66,21 @@ Route::post('/register', function (Request $request) {
     return redirect('/user/projects');
 });
 
-
 Route::post('/logout', function () {
     Auth::logout();
     return redirect('/login');
 })->name('logout');
 
+/*
+|--------------------------------------------------------------------------
+| ROOT
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/', function () {
 
-    if(auth()->check()){
-        if(auth()->user()->role->slug == 'admin'){
+    if (auth()->check()) {
+        if (auth()->user()->role->slug == 'admin') {
             return redirect('/admin/dashboard');
         }
         return redirect('/user/projects');
@@ -74,29 +89,44 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+/*
+|--------------------------------------------------------------------------
+| USER
+|--------------------------------------------------------------------------
+*/
 
-Route::middleware(['auth'])->prefix('user')->name('user.')->group(function(){
+Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
 
-    Route::get('/dashboard', function(){
+    Route::get('/dashboard', function () {
         return redirect()->route('user.projects.index');
     })->name('dashboard');
 
     Route::resource('projects', ProjectController::class);
-
 });
 
-Route::middleware(['auth','admin'])->prefix('admin')->name('admin.')->group(function(){
+/*
+|--------------------------------------------------------------------------
+| ADMIN
+|--------------------------------------------------------------------------
+*/
 
-    Route::get('/dashboard', function(){
-        return view('admin.dashboard');
-    })->name('dashboard');
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
+    // DASHBOARD
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // CATEGORY
     Route::resource('categories', CategoryController::class);
 
-    Route::delete('/projects/{project}', [ProjectModerationController::class,'destroy'])
+    // ✅ USER MANAGEMENT (INI YANG KURANG TADI)
+    Route::resource('users', UserController::class);
+
+    // PROJECT MODERATION
+    Route::delete('/projects/{project}', [ProjectModerationController::class, 'destroy'])
         ->name('projects.destroy');
 
-    Route::delete('/media/{media}', [MediaController::class,'destroy'])
+    // MEDIA DELETE
+    Route::delete('/media/{media}', [MediaController::class, 'destroy'])
         ->name('media.destroy');
-
 });

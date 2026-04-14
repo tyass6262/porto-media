@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Project;
 
-class ProjectModerationController
+class ProjectModerationController extends Controller
 {
-    public function destroy(Project $project)
+    public function index()
     {
-        $project->delete();
-        return back();
+        $projects = Project::with(['user', 'categories', 'media'])
+            ->latest()
+            ->paginate(9);
+
+        return view('admin.projects.index', compact('projects'));
     }
 }

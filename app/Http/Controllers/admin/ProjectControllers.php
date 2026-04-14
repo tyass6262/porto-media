@@ -23,6 +23,7 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
+        
         $project->delete();
 
         return back()->with('success', 'Project berhasil dihapus oleh admin');
