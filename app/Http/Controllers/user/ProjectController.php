@@ -3,17 +3,23 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Category;
 use App\Models\Media;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
+    /* =========================
+       USER PROJECT (PRIVATE)
+    ========================= */
+
     public function index()
     {
-        $projects = Project::where('user_id', auth()->id())
-            ->with('categories')
+        $projects = Project::with(['categories','media'])
+            ->where('user_id', Auth::id())
+            ->latest()
             ->get();
 
         return view('user.projects.index', compact('projects'));
@@ -21,63 +27,175 @@ class ProjectController extends Controller
 
     public function create()
     {
-        $categories = Category::where('is_active', 1)->get();
+        $categories = Category::where('is_active', true)->get();
+
         return view('user.projects.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        // ✅ VALIDASI (FIX)
         $request->validate([
-            'title' => 'required|max:120',
-            'status' => 'required',
-            'media.*' => 'nullable|file|mimes:jpg,jpeg,png,mp4,pdf,doc,docx,zip|max:10240'
+            'title' => 'required',
+            'description' => 'nullable',
+            'categories' => 'required|array',
+            'media.*' => 'nullable|file|max:20480',
+            'embed_urls.*' => 'nullable|url',
+            'status' => 'required|in:draft,published'
         ]);
 
-        // ✅ SIMPAN PROJECT
         $project = Project::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'title' => $request->title,
             'description' => $request->description,
             'status' => $request->status
         ]);
 
-        // ✅ SIMPAN KATEGORI
-        if ($request->categories) {
-            $project->categories()->sync($request->categories);
-        }
+        $project->categories()->sync($request->categories);
 
-        // ✅ UPLOAD MULTIPLE FILE (FIX)
+        $this->handleMediaUpload($request, $project);
+
+        return redirect()->route('user.projects.index')
+            ->with('success','Project berhasil dibuat');
+    }
+
+    public function show($id)
+    {
+        $project = Project::with(['categories','media','user'])
+            ->where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        return view('user.projects.show', compact('project'));
+    }
+
+    public function edit($id)
+    {
+        $project = Project::where('user_id', Auth::id())->findOrFail($id);
+        $categories = Category::where('is_active', true)->get();
+
+        return view('user.projects.edit', compact('project','categories'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $project = Project::where('user_id', Auth::id())->findOrFail($id);
+
+        $request->validate([
+            'title' => 'required',
+            'description' => 'nullable',
+            'categories' => 'required|array',
+            'media.*' => 'nullable|file|max:20480',
+            'embed_urls.*' => 'nullable|url',
+            'status' => 'required|in:draft,published'
+        ]);
+
+        $project->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'status' => $request->status
+        ]);
+
+        $project->categories()->sync($request->categories);
+
+        // tambah media baru
+        $this->handleMediaUpload($request, $project);
+
+        return redirect()->route('user.projects.index')
+            ->with('success','Project berhasil diupdate');
+    }
+
+    public function destroy($id)
+    {
+        $project = Project::where('user_id', Auth::id())->findOrFail($id);
+
+        $project->delete();
+
+        return back()->with('success','Project berhasil dihapus');
+    }
+
+    /* =========================
+       PUBLIC PORTFOLIO
+    ========================= */
+
+    public function publicIndex()
+    {
+        $projects = Project::with(['categories','media','user'])
+            ->where('status','published')
+            ->latest()
+            ->get();
+
+        $categories = Category::where('is_active', true)->get();
+
+        return view('portfolio.index', compact('projects','categories'));
+    }
+
+    public function publicShow($id)
+    {
+        $project = Project::with(['categories','media','user'])
+            ->where('id', $id)
+            ->where('status','published')
+            ->firstOrFail();
+
+        return view('portfolio.show', compact('project'));
+    }
+
+    public function filterByCategory($slug)
+    {
+        $projects = Project::whereHas('categories', function($q) use ($slug){
+                $q->where('slug', $slug);
+            })
+            ->where('status','published')
+            ->with(['categories','media','user'])
+            ->latest()
+            ->get();
+
+        $categories = Category::where('is_active', true)->get();
+
+        return view('portfolio.index', compact('projects','categories'));
+    }
+
+    /* =========================
+       HELPER
+    ========================= */
+
+    private function handleMediaUpload($request, $project)
+    {
+        // file upload
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
 
-                if ($file->isValid()) {
+                $path = $file->store('media', 'public');
+                $type = $this->detectType($file->getClientOriginalExtension());
 
-                    $path = $file->store('portfolio', 'public');
+                Media::create([
+                    'project_id' => $project->id,
+                    'file_path' => $path,
+                    'type' => $type
+                ]);
+            }
+        }
 
+        // embed URL
+        if ($request->embed_urls) {
+            foreach ($request->embed_urls as $url) {
+                if ($url && filter_var($url, FILTER_VALIDATE_URL)) {
                     Media::create([
                         'project_id' => $project->id,
-                        'file_path' => $path,
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'file_size' => $file->getSize(),
+                        'embed_url' => $url,
+                        'type' => 'embed'
                     ]);
                 }
             }
         }
-
-        return redirect()->route('user.projects.index')
-            ->with('success', 'Project berhasil ditambahkan!');
     }
 
-    public function show(Project $project)
+    private function detectType($ext)
     {
-        return view('user.projects.show', compact('project'));
-    }
+        $ext = strtolower($ext);
 
-    public function destroy(Project $project)
-    {
-        $project->delete();
-        return back()->with('success', 'Project berhasil dihapus!');
+        if (in_array($ext, ['jpg','jpeg','png','gif'])) return 'image';
+        if (in_array($ext, ['mp4','mov','avi'])) return 'video';
+
+        return 'file';
     }
 }

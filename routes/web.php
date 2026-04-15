@@ -91,6 +91,24 @@ Route::get('/', function () {
 
 /*
 |--------------------------------------------------------------------------
+| PUBLIC PORTFOLIO (🔥 INI YANG BELUM TADI)
+|--------------------------------------------------------------------------
+*/
+
+// semua project published (gallery)
+Route::get('/portfolio', [ProjectController::class, 'publicIndex'])
+    ->name('portfolio.index');
+
+// detail project publik
+Route::get('/portfolio/{project}', [ProjectController::class, 'publicShow'])
+    ->name('portfolio.show');
+
+// filter kategori
+Route::get('/portfolio/category/{slug}', [ProjectController::class, 'filterByCategory'])
+    ->name('portfolio.category');
+
+/*
+|--------------------------------------------------------------------------
 | USER
 |--------------------------------------------------------------------------
 */
@@ -101,6 +119,7 @@ Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
         return redirect()->route('user.projects.index');
     })->name('dashboard');
 
+    // CRUD PROJECT + upload media
     Route::resource('projects', ProjectController::class);
 });
 
@@ -120,20 +139,20 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('categories', CategoryController::class);
 
     Route::patch('/categories/{category}/toggle', [CategoryController::class, 'toggle'])
-    ->name('categories.toggle');
+        ->name('categories.toggle');
 
     // USER MANAGEMENT
     Route::resource('users', UserController::class);
 
-    // ✅ TAMBAHAN: LIHAT SEMUA PROJECT
+    // LIHAT SEMUA PROJECT
     Route::get('/projects', [ProjectModerationController::class, 'index'])
         ->name('projects.index');
 
-    // PROJECT DELETE (opsional kalau nanti mau)
+    // HAPUS PROJECT
     Route::delete('/projects/{project}', [ProjectModerationController::class, 'destroy'])
         ->name('projects.destroy');
 
-    // MEDIA DELETE
+    // HAPUS MEDIA
     Route::delete('/media/{media}', [MediaController::class, 'destroy'])
         ->name('media.destroy');
 });
