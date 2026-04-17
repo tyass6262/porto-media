@@ -11,9 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
-    /* =========================
-       USER PROJECT (PRIVATE)
-    ========================= */
 
     public function index()
     {
@@ -97,7 +94,6 @@ class ProjectController extends Controller
 
         $project->categories()->sync($request->categories);
 
-        // tambah media baru
         $this->handleMediaUpload($request, $project);
 
         return redirect()->route('user.projects.index')
@@ -112,10 +108,6 @@ class ProjectController extends Controller
 
         return back()->with('success','Project berhasil dihapus');
     }
-
-    /* =========================
-       PUBLIC PORTFOLIO
-    ========================= */
 
     public function publicIndex()
     {
@@ -154,13 +146,8 @@ class ProjectController extends Controller
         return view('portfolio.index', compact('projects','categories'));
     }
 
-    /* =========================
-       HELPER
-    ========================= */
-
     private function handleMediaUpload($request, $project)
     {
-        // file upload
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
 
@@ -170,12 +157,11 @@ class ProjectController extends Controller
                 Media::create([
                     'project_id' => $project->id,
                     'file_path' => $path,
-                    'type' => $type
+                    'file_type' => $type
                 ]);
             }
         }
 
-        // embed URL
         if ($request->embed_urls) {
             foreach ($request->embed_urls as $url) {
                 if ($url && filter_var($url, FILTER_VALIDATE_URL)) {

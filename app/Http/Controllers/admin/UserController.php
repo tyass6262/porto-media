@@ -8,20 +8,17 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    // 🔹 LIST USER
     public function index()
     {
         $users = User::latest()->paginate(10);
         return view('admin.users.index', compact('users'));
     }
 
-    // 🔹 FORM CREATE
     public function create()
     {
         return view('admin.users.create');
     }
 
-    // 🔹 SIMPAN USER
     public function store(Request $request)
     {
         $request->validate([
@@ -41,13 +38,11 @@ class UserController extends Controller
             ->with('success', 'User berhasil ditambahkan');
     }
 
-    // 🔹 FORM EDIT
     public function edit(User $user)
     {
         return view('admin.users.edit', compact('user'));
     }
 
-    // 🔹 UPDATE USER
     public function update(Request $request, User $user)
     {
         $request->validate([
@@ -60,7 +55,6 @@ class UserController extends Controller
             'email' => $request->email
         ];
 
-        // update password kalau diisi
         if ($request->filled('password')) {
             $data['password'] = bcrypt($request->password);
         }
@@ -71,10 +65,8 @@ class UserController extends Controller
             ->with('success', 'User berhasil diupdate');
     }
 
-    // 🔹 DELETE USER (TANPA HAPUS PROJECT)
     public function destroy(User $user)
     {
-        // ❌ cegah hapus diri sendiri
         if ($user->id == auth()->id()) {
             return back()->with('error', 'Tidak bisa menghapus akun sendiri!');
         }

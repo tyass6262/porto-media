@@ -17,7 +17,6 @@ class DashboardController extends Controller
         $categoryCount = Category::count();
         $mediaCount = Media::count();
 
-        // ✅ FIX DI SINI (categories)
         $projects = Project::with(['user', 'categories', 'media'])
                     ->latest()
                     ->take(10)

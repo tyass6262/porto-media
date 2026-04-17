@@ -7,10 +7,9 @@ use App\Models\Project;
 
 class ProjectModerationController extends Controller
 {
-    // ✅ Lihat semua project user
     public function index()
     {
-        $projects = Project::with(['user', 'categories', 'media'])
+        $projects = Project::with(['user','media','categories'])
             ->latest()
             ->get();
 
@@ -19,12 +18,8 @@ class ProjectModerationController extends Controller
 
     public function destroy(Project $project)
     {
-        foreach ($project->media as $media) {
-            $media->delete();
-        }
-
         $project->delete();
 
-        return back()->with('success', 'Project berhasil dihapus (moderasi)');
+        return back()->with('success', 'Project berhasil dihapus');
     }
 }

@@ -14,10 +14,12 @@ return new class extends Migration {
                   ->constrained('projects')
                   ->cascadeOnDelete();
 
-            $table->string('file_path');
-            $table->string('file_type');
-            $table->string('file_name');
-            $table->integer('file_size');
+            $table->string('file_path')->nullable(); 
+            $table->string('embed_url')->nullable(); 
+
+            $table->string('file_type'); 
+            $table->string('file_name')->nullable();
+            $table->integer('file_size')->nullable();
 
             $table->timestamps();
         });
