@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
-
     public function index()
     {
         $projects = Project::with(['categories','media'])
@@ -25,7 +24,6 @@ class ProjectController extends Controller
     public function create()
     {
         $categories = Category::where('is_active', true)->get();
-
         return view('user.projects.create', compact('categories'));
     }
 
@@ -103,12 +101,31 @@ class ProjectController extends Controller
     public function destroy($id)
     {
         $project = Project::where('user_id', Auth::id())->findOrFail($id);
-
         $project->delete();
 
         return back()->with('success','Project berhasil dihapus');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | 🔥 TOGGLE STATUS (Publish / Draft)
+    |--------------------------------------------------------------------------
+    */
+    public function toggleStatus($id)
+    {
+        $project = Project::where('user_id', Auth::id())->findOrFail($id);
+
+        $project->status = $project->status === 'published' ? 'draft' : 'published';
+        $project->save();
+
+        return back()->with('success', 'Status project berhasil diubah');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 🌐 PUBLIC VIEW
+    |--------------------------------------------------------------------------
+    */
     public function publicIndex()
     {
         $projects = Project::with(['categories','media','user'])
@@ -146,8 +163,14 @@ class ProjectController extends Controller
         return view('portfolio.index', compact('projects','categories'));
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | 📦 HANDLE MEDIA
+    |--------------------------------------------------------------------------
+    */
     private function handleMediaUpload($request, $project)
     {
+        // UPLOAD FILE
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
 
@@ -162,25 +185,65 @@ class ProjectController extends Controller
             }
         }
 
+        // EMBED URL
         if ($request->embed_urls) {
             foreach ($request->embed_urls as $url) {
                 if ($url && filter_var($url, FILTER_VALIDATE_URL)) {
+
                     Media::create([
                         'project_id' => $project->id,
-                        'embed_url' => $url,
-                        'type' => 'embed'
+                        'embed_url' => $this->formatEmbedUrl($url),
+                        'file_type' => 'embed'
                     ]);
                 }
             }
         }
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | 🔥 FORMAT EMBED (AUTO SUPPORT MULTI PLATFORM)
+    |--------------------------------------------------------------------------
+    */
+    private function formatEmbedUrl($url)
+    {
+        $url = trim($url);
+
+        // YOUTUBE
+        if (str_contains($url, 'youtube.com/watch?v=')) {
+            return str_replace('watch?v=', 'embed/', strtok($url, '?'));
+        }
+
+        if (str_contains($url, 'youtu.be/')) {
+            return 'https://www.youtube.com/embed/' . basename($url);
+        }
+
+        if (str_contains($url, 'youtube.com/shorts/')) {
+            return str_replace('shorts/', 'embed/', strtok($url, '?'));
+        }
+
+        // GOOGLE DRIVE
+        if (str_contains($url, 'drive.google.com')) {
+            if (preg_match('/\/d\/(.*?)\//', $url, $match)) {
+                return "https://drive.google.com/file/d/".$match[1]."/preview";
+            }
+        }
+
+        // DEFAULT
+        return $url;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 🔍 DETECT FILE TYPE
+    |--------------------------------------------------------------------------
+    */
     private function detectType($ext)
     {
         $ext = strtolower($ext);
 
-        if (in_array($ext, ['jpg','jpeg','png','gif'])) return 'image';
-        if (in_array($ext, ['mp4','mov','avi'])) return 'video';
+        if (in_array($ext, ['jpg','jpeg','png','gif','webp'])) return 'image';
+        if (in_array($ext, ['mp4','mov','avi','webm'])) return 'video';
 
         return 'file';
     }

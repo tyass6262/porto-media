@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Kategori</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -27,11 +26,11 @@
             --danger-bg: rgba(239, 68, 68, 0.1);
             --amber: #f59e0b;
             --amber-subtle: rgba(245, 158, 11, 0.08);
+            --amber-border: rgba(245, 158, 11, 0.15);
             --rose: #f43f5e;
             --rose-subtle: rgba(244, 63, 94, 0.08);
             --indigo: #818cf8;
             --indigo-subtle: rgba(129, 140, 248, 0.08);
-            --sidebar-w: 260px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -39,241 +38,216 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
-            display: flex;
-            overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        .bg-layer {
-            position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
-        }
-        .bg-layer::before {
-            content: ''; position: absolute; top: -30%; right: -10%;
-            width: 60vw; height: 60vw;
-            background: radial-gradient(circle, rgba(16,185,129,0.05) 0%, transparent 70%);
-            animation: floatBlob1 22s ease-in-out infinite;
-        }
-        .bg-layer::after {
-            content: ''; position: absolute; bottom: -20%; left: 10%;
-            width: 50vw; height: 50vw;
-            background: radial-gradient(circle, rgba(6,182,212,0.04) 0%, transparent 70%);
-            animation: floatBlob2 28s ease-in-out infinite;
-        }
-        @keyframes floatBlob1 {
-            0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-8%,10%) scale(1.08)}
-        }
-        @keyframes floatBlob2 {
-            0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(10%,-8%) scale(1.05)}
-        }
-        .grid-pattern {
-            position: fixed; inset: 0; z-index: 1; pointer-events: none;
-            background-image:
-                linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
-            background-size: 60px 60px;
-            mask-image: radial-gradient(ellipse at 70% 30%, black 20%, transparent 70%);
-        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 3px; }
 
-        /* ==================== SIDEBAR ==================== */
-        .sidebar {
-            position: fixed; left: 0; top: 0; bottom: 0;
-            width: var(--sidebar-w); z-index: 100;
-            background: rgba(10, 15, 26, 0.95);
-            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border-right: 1px solid var(--card-border);
-            display: flex; flex-direction: column;
-            transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
-        }
-        .sidebar-header {
-            padding: 24px 22px; border-bottom: 1px solid var(--card-border);
-            display: flex; align-items: center; gap: 12px;
-        }
-        .sidebar-logo {
-            width: 40px; height: 40px; border-radius: 12px;
-            background: linear-gradient(135deg, var(--accent), var(--cyan));
-            display: flex; align-items: center; justify-content: center;
-            font-size: 17px; color: white; flex-shrink: 0;
-        }
-        .sidebar-brand { font-size: 17px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.3px; }
-        .sidebar-badge {
-            margin-left: auto; font-size: 10px; font-weight: 700;
-            padding: 3px 8px; border-radius: 6px;
-            background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.2);
-            color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .sidebar-nav { flex: 1; overflow-y: auto; padding: 16px 12px; }
-        .nav-section-title {
-            font-size: 11px; font-weight: 700; color: var(--text-muted);
-            text-transform: uppercase; letter-spacing: 1.2px;
-            padding: 16px 12px 8px; margin-top: 4px;
-        }
-        .nav-link {
-            display: flex; align-items: center; gap: 12px;
-            padding: 11px 14px; border-radius: 10px;
-            text-decoration: none; font-size: 13.5px; font-weight: 500;
-            color: var(--text-muted); transition: all 0.2s;
-            margin-bottom: 2px; position: relative;
-        }
-        .nav-link i { width: 18px; text-align: center; font-size: 14px; flex-shrink: 0; }
-        .nav-link:hover { color: var(--text-secondary); background: rgba(255,255,255,0.03); }
-        .nav-link.active { color: var(--accent); background: var(--accent-subtle); }
-        .nav-link.active::before {
-            content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-            width: 3px; height: 20px; border-radius: 0 3px 3px 0; background: var(--accent);
-        }
-        .nav-link .link-badge {
-            margin-left: auto; font-size: 11px; font-weight: 600;
-            padding: 2px 8px; border-radius: 6px; min-width: 22px; text-align: center;
-        }
-        .link-badge.green { background: var(--accent-subtle); color: var(--accent); }
-        .link-badge.cyan { background: rgba(6,182,212,0.08); color: var(--cyan); }
-        .link-badge.amber { background: var(--amber-subtle); color: var(--amber); }
-        .sidebar-footer { padding: 16px 12px; border-top: 1px solid var(--card-border); }
-        .sidebar-user {
-            display: flex; align-items: center; gap: 12px;
-            padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,0.03);
-        }
-        .sidebar-avatar {
-            width: 36px; height: 36px; border-radius: 10px;
-            background: linear-gradient(135deg, var(--accent), var(--cyan));
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px; color: white; font-weight: 700; flex-shrink: 0;
-        }
-        .sidebar-user-info { flex: 1; min-width: 0; }
-        .sidebar-user-name { font-size: 13px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .sidebar-user-role { font-size: 11.5px; color: var(--text-muted); }
-        .logout-btn {
-            background: none; border: none; cursor: pointer;
-            padding: 8px; border-radius: 8px;
-            color: var(--text-muted); font-size: 15px;
-            transition: all 0.2s; display: flex;
-            align-items: center; justify-content: center;
-        }
-        .logout-btn:hover { color: var(--danger); background: var(--danger-bg); }
-        .sidebar-overlay {
-            display: none; position: fixed; inset: 0; z-index: 90;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-        }
-        .sidebar-overlay.open { display: block; }
-
-        /* ==================== MAIN ==================== */
-        .main-wrapper {
-            flex: 1; margin-left: var(--sidebar-w);
-            position: relative; z-index: 10;
-            min-height: 100vh; display: flex; flex-direction: column;
-        }
+        /* ═══ TOPBAR ═══ */
         .topbar {
-            position: sticky; top: 0; z-index: 50;
-            background: rgba(10,15,26,0.75);
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(10, 15, 26, 0.82);
+            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
             border-bottom: 1px solid var(--card-border);
-            padding: 0 32px; height: 64px;
+            height: 56px;
             display: flex; align-items: center; justify-content: space-between;
+            padding: 0 32px;
         }
-        .topbar-left { display: flex; align-items: center; gap: 16px; }
-        .mobile-menu-btn {
-            display: none; width: 38px; height: 38px; border-radius: 10px;
-            background: rgba(255,255,255,0.04); border: 1px solid var(--input-border);
-            color: var(--text-muted); cursor: pointer; font-size: 16px;
-            align-items: center; justify-content: center; transition: all 0.2s;
-        }
-        .mobile-menu-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.07); }
-        .breadcrumb-bar { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
-        .breadcrumb-bar a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
-        .breadcrumb-bar a:hover { color: var(--accent); }
-        .breadcrumb-bar i { font-size: 10px; opacity: 0.5; }
-        .breadcrumb-bar .current { color: var(--text-secondary); font-weight: 500; }
 
-        .page-content { flex: 1; padding: 32px; }
+        .topbar-left { display: flex; align-items: center; gap: 12px; }
+
+        .btn-back {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 13px; border-radius: 7px;
+            font-size: 12px; font-weight: 500;
+            color: var(--text-muted); text-decoration: none;
+            background: transparent;
+            border: 1px solid var(--card-border);
+            cursor: pointer; transition: all 0.18s;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .btn-back i { font-size: 10px; transition: transform 0.18s; }
+        .btn-back:hover {
+            color: var(--text-primary);
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.12);
+        }
+        .btn-back:hover i { transform: translateX(-1px); }
+
+        .topbar-sep { width: 1px; height: 20px; background: var(--card-border); }
+
+        .topbar-brand {
+            display: flex; align-items: center; gap: 9px;
+            font-size: 14px; font-weight: 700; color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+        .topbar-brand-icon {
+            width: 30px; height: 30px; border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; color: #fff;
+        }
+
+        .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+        .topbar-chip {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 4px 10px; border-radius: 7px;
+            font-size: 11px; font-weight: 600;
+            background: var(--accent-subtle);
+            border: 1px solid rgba(16,185,129,0.12);
+            color: var(--accent);
+        }
+        .topbar-chip i { font-size: 10px; }
+
+        .user-pill {
+            display: flex; align-items: center; gap: 8px;
+            padding: 5px 12px 5px 5px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--card-border);
+            border-radius: 100px;
+        }
+        .user-pill .up-av {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 700; color: #fff;
+        }
+        .user-pill .up-name { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+
+        /* ═══ PAGE ═══ */
+        .page {
+            max-width: 1060px;
+            margin: 0 auto;
+            padding: 28px 32px 60px;
+        }
 
         /* Page Header */
         .page-header {
             display: flex; align-items: flex-end; justify-content: space-between;
-            margin-bottom: 28px; gap: 16px; flex-wrap: wrap;
+            margin-bottom: 22px; gap: 16px; flex-wrap: wrap;
         }
-        .page-header h1 { font-size: 26px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; margin-bottom: 4px; }
-        .page-header p { font-size: 14.5px; color: var(--text-muted); }
+        .page-header h1 {
+            font-size: 22px; font-weight: 800; color: var(--text-primary);
+            letter-spacing: -0.03em; margin-bottom: 2px;
+        }
+        .page-header p { font-size: 13px; color: var(--text-muted); }
         .count-badge {
             display: inline-flex; align-items: center; gap: 6px;
-            background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.15);
-            color: var(--accent); font-size: 12.5px; font-weight: 600;
-            padding: 4px 12px; border-radius: 20px; margin-top: 8px;
+            background: var(--accent-subtle);
+            border: 1px solid rgba(16,185,129,0.15);
+            color: var(--accent); font-size: 12px; font-weight: 600;
+            padding: 3px 11px; border-radius: 20px; margin-top: 6px;
         }
+
         .btn-add {
             display: inline-flex; align-items: center; gap: 8px;
-            padding: 11px 22px; border-radius: 10px;
-            background: linear-gradient(135deg, var(--accent), #059669);
-            color: white; border: none;
-            font-size: 13.5px; font-weight: 700;
+            padding: 10px 20px; border-radius: 10px;
+            background: var(--accent); color: #fff; border: none;
+            font-size: 13px; font-weight: 700;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            cursor: pointer; transition: all 0.3s;
-            text-decoration: none; position: relative; overflow: hidden;
+            cursor: pointer; transition: all 0.2s;
+            text-decoration: none;
+            box-shadow: 0 3px 14px var(--accent-glow);
         }
-        .btn-add::before {
-            content: ''; position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-            transition: left 0.5s;
+        .btn-add:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 5px 22px rgba(16,185,129,0.35);
+            transform: translateY(-1px);
+            color: #fff;
         }
-        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 24px var(--accent-glow); }
-        .btn-add:hover::before { left: 100%; }
-        .btn-add:active { transform: translateY(0); }
+        .btn-add i { font-size: 12px; }
+
+        /* Session alerts */
+        .session-alert { margin-bottom: 18px; }
+        .alert-ok {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 18px;
+            background: var(--accent-subtle);
+            border: 1px solid rgba(16,185,129,0.14);
+            border-radius: 12px;
+            color: var(--accent-hover); font-size: 13px; font-weight: 500;
+            animation: sld 0.3s ease;
+        }
+        .alert-ok i { font-size: 14px; }
+        .alert-err {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 18px;
+            background: var(--danger-bg);
+            border: 1px solid rgba(239,68,68,0.18);
+            border-radius: 12px;
+            color: #fca5a5; font-size: 13px; font-weight: 500;
+            animation: sld 0.3s ease;
+        }
+        .alert-err i { font-size: 14px; color: var(--danger); }
+        @keyframes sld { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
 
         /* Toolbar */
         .toolbar {
-            display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap;
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 18px; flex-wrap: wrap;
         }
         .search-box { flex: 1; min-width: 200px; position: relative; }
         .search-box i {
-            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-            color: var(--text-muted); font-size: 14px; pointer-events: none; transition: color 0.3s;
+            position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); font-size: 12px; pointer-events: none;
         }
         .search-box input {
-            width: 100%; padding: 11px 14px 11px 42px;
-            background: var(--input-bg); border: 1.5px solid var(--input-border);
-            border-radius: 10px; color: var(--text-primary);
-            font-size: 13.5px; font-family: 'Plus Jakarta Sans', sans-serif;
-            outline: none; transition: all 0.3s;
+            width: 100%; padding: 9px 14px 9px 38px;
+            background: var(--input-bg); border: 1px solid var(--input-border);
+            border-radius: 9px; color: var(--text-primary);
+            font-size: 13px; font-family: 'Plus Jakarta Sans', sans-serif;
+            outline: none; transition: all 0.2s;
         }
         .search-box input::placeholder { color: var(--text-muted); }
-        .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--input-focus); }
-        .search-box input:focus + i { color: var(--accent); }
-        .filter-chips { display: flex; gap: 6px; }
-        .filter-chip {
-            padding: 9px 16px; border-radius: 10px;
-            background: rgba(255,255,255,0.04); border: 1.5px solid var(--input-border);
-            color: var(--text-muted); font-size: 13px; font-weight: 500;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            cursor: pointer; transition: all 0.2s;
+        .search-box input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.06);
         }
-        .filter-chip:hover { color: var(--text-secondary); background: rgba(255,255,255,0.06); }
-        .filter-chip.active { background: var(--accent-subtle); border-color: rgba(16,185,129,0.25); color: var(--accent); font-weight: 600; }
+
+        .filter-tabs {
+            display: flex; gap: 3px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--card-border);
+            border-radius: 9px; padding: 3px;
+        }
+        .ftab {
+            padding: 7px 16px; border-radius: 7px;
+            font-size: 12px; font-weight: 500;
+            color: var(--text-muted); background: transparent;
+            border: none; cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.15s;
+        }
+        .ftab:hover { color: var(--text-secondary); }
+        .ftab.on { background: rgba(255,255,255,0.08); color: var(--text-primary); font-weight: 600; }
 
         /* Table */
         .table-card {
             background: var(--card-bg);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--card-border);
-            border-radius: 20px; overflow: hidden;
-            animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
-            animation-delay: 0.1s;
+            border-radius: 16px; overflow: hidden;
+            animation: fu 0.4s cubic-bezier(0.16,1,0.3,1) both;
         }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(16px); filter: blur(2px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        @keyframes fu {
+            from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); }
         }
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
         thead { background: rgba(255,255,255,0.02); }
         th {
-            padding: 14px 20px; text-align: left;
-            font-size: 12px; font-weight: 700; color: var(--text-muted);
+            padding: 13px 20px; text-align: left;
+            font-size: 11px; font-weight: 700; color: var(--text-muted);
             text-transform: uppercase; letter-spacing: 0.8px;
             border-bottom: 1px solid var(--card-border);
             white-space: nowrap;
         }
         td {
-            padding: 16px 20px; font-size: 14px;
+            padding: 14px 20px; font-size: 13px;
             border-bottom: 1px solid var(--card-border);
             color: var(--text-secondary); vertical-align: middle;
         }
@@ -281,292 +255,239 @@
         tbody tr:hover { background: rgba(255,255,255,0.02); }
         tbody tr:last-child td { border-bottom: none; }
 
-        .cat-name-cell { display: flex; align-items: center; gap: 14px; }
+        .cat-cell { display: flex; align-items: center; gap: 14px; }
         .cat-icon {
             width: 38px; height: 38px; border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 15px; flex-shrink: 0;
+            font-size: 14px; flex-shrink: 0;
         }
-        .cat-icon.green { background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.15); color: var(--accent); }
-        .cat-icon.cyan { background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.15); color: var(--cyan); }
-        .cat-icon.amber { background: var(--amber-subtle); border: 1px solid rgba(245,158,11,0.15); color: var(--amber); }
-        .cat-icon.rose { background: var(--rose-subtle); border: 1px solid rgba(244,63,94,0.15); color: var(--rose); }
-        .cat-icon.indigo { background: var(--indigo-subtle); border: 1px solid rgba(129,140,248,0.15); color: var(--indigo); }
+        .cat-icon.g { background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.12); color: var(--accent); }
+        .cat-icon.c { background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.12); color: var(--cyan); }
+        .cat-icon.a { background: var(--amber-subtle); border: 1px solid rgba(245,158,11,0.12); color: var(--amber); }
+        .cat-icon.r { background: var(--rose-subtle); border: 1px solid rgba(244,63,94,0.12); color: var(--rose); }
+        .cat-icon.i { background: var(--indigo-subtle); border: 1px solid rgba(129,140,248,0.12); color: var(--indigo); }
         .cat-name-text { font-weight: 600; color: var(--text-primary); }
-        .cat-slug { font-size: 12px; color: var(--text-muted); margin-top: 2px; font-family: 'Courier New', monospace; }
-
-        /* Status badge */
-        .status-badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 5px 12px; border-radius: 20px;
-            font-size: 12px; font-weight: 600;
+        .cat-slug {
+            font-size: 11px; color: var(--text-muted); margin-top: 1px;
+            font-family: 'Courier New', monospace;
         }
-        .status-badge .dot { width: 6px; height: 6px; border-radius: 50%; }
-        .status-active { background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.15); color: var(--accent); }
-        .status-active .dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
-        .status-inactive { background: rgba(255,255,255,0.03); border: 1px solid var(--input-border); color: var(--text-muted); }
-        .status-inactive .dot { background: var(--text-muted); }
 
-        .projects-count {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 13px; color: var(--text-muted);
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 4px 11px; border-radius: 20px;
+            font-size: 11px; font-weight: 600;
         }
-        .projects-count i { font-size: 12px; opacity: 0.6; }
+        .status-pill .dot { width: 5px; height: 5px; border-radius: 50%; }
+        .st-on { background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.12); color: var(--accent); }
+        .st-on .dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+        .st-off { background: rgba(255,255,255,0.03); border: 1px solid var(--input-border); color: var(--text-muted); }
+        .st-off .dot { background: var(--text-muted); }
 
-        /* Action buttons */
-        .action-btns { display: flex; gap: 6px; justify-content: flex-end; }
-        .btn-icon {
-            width: 34px; height: 34px; border-radius: 8px;
-            background: rgba(255,255,255,0.03); border: 1px solid var(--input-border);
+        .proj-count {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 12px; color: var(--text-muted);
+        }
+        .proj-count i { font-size: 11px; opacity: 0.5; }
+
+        .action-btns { display: flex; gap: 5px; justify-content: flex-end; }
+        .btn-ic {
+            width: 32px; height: 32px; border-radius: 7px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--card-border);
             color: var(--text-muted); cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            font-size: 13px; transition: all 0.2s; text-decoration: none;
+            font-size: 12px; transition: all 0.15s;
+            text-decoration: none; padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
-        .btn-icon:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
-        .btn-icon.toggle-active:hover { background: var(--amber-subtle); color: var(--amber); border-color: rgba(245,158,11,0.2); }
-        .btn-icon.toggle-inactive:hover { background: var(--accent-subtle); color: var(--accent); border-color: rgba(16,185,129,0.2); }
-        .btn-icon.danger:hover { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,0.2); }
+        .btn-ic:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
 
-        /* Toggle form inline */
+        /* ── Tombol toggle AKTIF (hijau, klik untuk nonaktifkan) ── */
+        .btn-ic.tog-on {
+            background: var(--accent-subtle);
+            border-color: rgba(16,185,129,0.18);
+            color: var(--accent);
+        }
+        .btn-ic.tog-on i { filter: drop-shadow(0 0 3px rgba(16,185,129,0.4)); }
+        .btn-ic.tog-on:hover {
+            background: rgba(245,158,11,0.1);
+            border-color: rgba(245,158,11,0.25);
+            color: var(--amber);
+        }
+        .btn-ic.tog-on:hover i { filter: none; }
+
+        /* ── Tombol toggle NONAKTIF (abu-redup, klik untuk aktifkan) ── */
+        .btn-ic.tog-off {
+            background: rgba(255,255,255,0.02);
+            border-color: rgba(255,255,255,0.06);
+            color: rgba(100,116,139,0.55);
+        }
+        .btn-ic.tog-off:hover {
+            background: var(--accent-subtle);
+            border-color: rgba(16,185,129,0.25);
+            color: var(--accent);
+        }
+
+        .btn-ic.del:hover { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,0.18); }
+
         .toggle-form { display: inline; }
 
-        /* Empty state */
-        .empty-state { text-align: center; padding: 60px 24px; }
+        /* Empty */
+        .empty {
+            text-align: center; padding: 60px 20px;
+        }
         .empty-icon {
             width: 64px; height: 64px; border-radius: 18px;
-            background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.15);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 26px; color: var(--accent); margin: 0 auto 16px; opacity: 0.6;
+            background: var(--accent-subtle);
+            border: 1px solid rgba(16,185,129,0.12);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 26px; color: var(--accent); opacity: 0.4; margin-bottom: 16px;
         }
-        .empty-state h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
-        .empty-state p { font-size: 13.5px; color: var(--text-muted); }
-        .no-results-inline { text-align: center; padding: 48px 24px; }
-        .no-results-inline i { font-size: 28px; color: var(--text-muted); opacity: 0.3; margin-bottom: 10px; display: block; }
-        .no-results-inline p { font-size: 14px; color: var(--text-muted); }
+        .empty h3 { font-size: 16px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; }
+        .empty p { font-size: 13px; color: var(--text-muted); }
 
-        /* Session alerts */
-        .session-alert { margin-bottom: 20px; }
-        .alert-custom {
-            background: var(--danger-bg); border: 1px solid rgba(239,68,68,0.2);
-            border-radius: 12px; padding: 14px 18px;
-            display: flex; align-items: center; gap: 12px;
-            font-size: 14px; color: #fca5a5; animation: shakeIn 0.5s ease;
+        .no-res {
+            text-align: center; padding: 48px 20px;
         }
-        .alert-custom i { color: var(--danger); font-size: 16px; flex-shrink: 0; }
-        .alert-success-custom {
-            background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.2);
-            border-radius: 12px; padding: 14px 18px;
-            display: flex; align-items: center; gap: 12px;
-            font-size: 14px; color: var(--accent-hover); animation: shakeIn 0.5s ease;
-        }
-        .alert-success-custom i { color: var(--accent); font-size: 16px; flex-shrink: 0; }
-        @keyframes shakeIn {
-            0%{opacity:0;transform:translateX(-10px)} 25%{transform:translateX(6px)} 50%{transform:translateX(-4px)} 75%{transform:translateX(2px)} 100%{opacity:1;transform:translateX(0)}
-        }
+        .no-res i { font-size: 24px; color: var(--text-muted); opacity: 0.3; margin-bottom: 8px; display: block; }
+        .no-res p { font-size: 13px; color: var(--text-muted); }
 
         /* Modal */
-        .modal-overlay {
-            position: fixed; inset: 0; z-index: 1000;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+        .modal-o {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(6px);
             display: flex; align-items: center; justify-content: center;
-            opacity: 0; visibility: hidden; transition: all 0.25s; padding: 24px;
+            opacity: 0; visibility: hidden; transition: all 0.2s;
+            padding: 24px;
         }
-        .modal-overlay.open { opacity: 1; visibility: visible; }
-        .modal-box {
-            background: #1e293b; border: 1px solid var(--card-border);
-            border-radius: 20px; padding: 32px; max-width: 400px; width: 100%;
-            transform: scale(0.9) translateY(20px);
-            transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
-            box-shadow: 0 25px 60px -12px rgba(0,0,0,0.5);
+        .modal-o.open { opacity: 1; visibility: visible; }
+        .modal-b {
+            background: rgba(17,24,39,0.97);
+            border: 1px solid var(--card-border);
+            border-radius: 16px; padding: 28px;
+            max-width: 400px; width: 100%;
+            transform: scale(0.95) translateY(16px);
+            transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
         }
-        .modal-overlay.open .modal-box { transform: scale(1) translateY(0); }
-        .modal-icon {
-            width: 56px; height: 56px; border-radius: 16px;
-            background: var(--danger-bg); border: 1px solid rgba(239,68,68,0.2);
+        .modal-o.open .modal-b { transform: scale(1) translateY(0); }
+        .modal-ic {
+            width: 52px; height: 52px; border-radius: 50%;
+            background: var(--danger-bg);
+            border: 1px solid rgba(239,68,68,0.18);
             display: flex; align-items: center; justify-content: center;
-            font-size: 22px; color: var(--danger); margin-bottom: 20px;
+            font-size: 20px; color: var(--danger); margin-bottom: 18px;
         }
-        .modal-box h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
-        .modal-box p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 28px; }
-        .modal-box p strong { color: var(--text-secondary); }
-        .modal-actions { display: flex; gap: 10px; }
-        .btn-modal {
-            flex: 1; padding: 12px; border-radius: 10px;
-            font-size: 14px; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif;
+        .modal-b h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+        .modal-b p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+        .modal-b p strong { color: var(--text-secondary); }
+        .modal-acts { display: flex; gap: 8px; }
+        .mbtn {
+            flex: 1; padding: 10px; border-radius: 9px;
+            font-size: 13px; font-weight: 600;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             cursor: pointer; transition: all 0.2s; border: none;
         }
-        .btn-cancel { background: rgba(255,255,255,0.05); border: 1px solid var(--input-border) !important; color: var(--text-secondary); }
-        .btn-cancel:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
-        .btn-delete-confirm { background: var(--danger); color: white; }
-        .btn-delete-confirm:hover { background: #dc2626; box-shadow: 0 4px 16px rgba(239,68,68,0.3); }
+        .mbtn.c { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
+        .mbtn.c:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
+        .mbtn.d { background: var(--danger); color: #fff; }
+        .mbtn.d:hover { background: #dc2626; box-shadow: 0 4px 14px rgba(239,68,68,0.3); }
 
-        /* ==================== Responsive ==================== */
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); }
-            .main-wrapper { margin-left: 0; }
-            .mobile-menu-btn { display: flex; }
-            .page-content { padding: 20px 16px; }
-            .page-header { flex-direction: column; align-items: flex-start; }
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 640px) {
             .topbar { padding: 0 16px; }
-            .hide-mobile { display: none; }
-            .action-btns { gap: 4px; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
+            .page { padding: 20px 16px 50px; }
+            .page-header { flex-direction: column; align-items: flex-start; }
+            .hide-m { display: none; }
+            .user-pill .up-name { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-layer"></div>
-    <div class="grid-pattern"></div>
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-
-    <!-- ==================== SIDEBAR ==================== -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo"><i class="fas fa-shield-halved"></i></div>
-            <span class="sidebar-brand">MyApp</span>
-            <span class="sidebar-badge">Admin</span>
+<!-- ═══ TOPBAR ═══ -->
+<header class="topbar">
+    <div class="topbar-left">
+        <a href="{{ route('admin.dashboard') }}" class="btn-back">
+            <i class="fas fa-arrow-left"></i>
+            Dashboard
+        </a>
+        <div class="topbar-sep"></div>
+        <div class="topbar-brand">
+            <div class="topbar-brand-icon"><i class="fas fa-tags"></i></div>
+            <span>Kelola Kategori</span>
         </div>
-        <nav class="sidebar-nav">
-            <div class="nav-section-title">Utama</div>
-            <a href="{{ route('admin.dashboard') }}" class="nav-link">
-                <i class="fas fa-table-cells"></i> Dashboard
-            </a>
-            <div class="nav-section-title">Manajemen</div>
-            <a href="{{ route('admin.categories.index') }}" class="nav-link active">
-                <i class="fas fa-tags"></i> Kategori
-                <span class="link-badge green">{{ $categories->count() }}</span>
-            </a>
-            <a href="{{ route('admin.users.index') }}" class="nav-link">
-                <i class="fas fa-users"></i> Pengguna
-                <span class="link-badge cyan">{{ $userCount ?? 0 }}</span>
-            </a>
-            <a href="{{ route('admin.projects.index') }}" class="nav-link">
-                <i class="fas fa-folder-open"></i> Semua Project
-                <span class="link-badge amber">{{ $projectCount ?? 0 }}</span>
-            </a>
-        </nav>
-        <div class="sidebar-footer">
-            <div class="sidebar-user">
-                <div class="sidebar-avatar">A</div>
-                <div class="sidebar-user-info">
-                    <div class="sidebar-user-name">{{ optional(auth()->user())->name ?? 'Admin' }}</div>
-                    <div class="sidebar-user-role">Super Admin</div>
-                </div>
-                <form action="{{ route('logout') }}" method="POST" style="margin:0;">
-                    @csrf
-                    <button type="submit" class="logout-btn" title="Logout" aria-label="Logout">
-                        <i class="fas fa-right-from-bracket"></i>
-                    </button>
-                </form>
-            </div>
+    </div>
+    <div class="topbar-right">
+        <div class="topbar-chip"><i class="fas fa-shield-check"></i> Admin</div>
+        <div class="user-pill">
+            <div class="up-av">{{ substr(optional(auth()->user())->name ?? 'A', 0, 1) }}</div>
+            <span class="up-name">{{ optional(auth()->user())->name ?? 'Admin' }}</span>
         </div>
-    </aside>
+    </div>
+</header>
 
-    <!-- ==================== MAIN ==================== -->
-    <div class="main-wrapper">
-        <header class="topbar">
-            <div class="topbar-left">
-                <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Menu">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="breadcrumb-bar">
-                    <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-                    <i class="fas fa-chevron-right"></i>
-                    <span class="current">Kategori</span>
-                </div>
-            </div>
-            <div class="topbar-right">
-                <button title="Refresh" aria-label="Refresh" onclick="location.reload()" style="width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid var(--input-border);color:var(--text-muted);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">
-                    <i class="fas fa-rotate-right"></i>
-                </button>
-            </div>
-        </header>
+<!-- ═══ PAGE ═══ -->
+<main class="page">
 
-        <div class="page-content">
+    @if(session('success'))
+        <div class="session-alert">
+            <div class="alert-ok"><i class="fas fa-circle-check"></i><span>{{ session('success') }}</span></div>
+        </div>
+    @endif
 
-            <!-- Session alerts -->
-            @if(session('success'))
-            <div class="session-alert">
-                <div class="alert-success-custom">
-                    <i class="fas fa-circle-check"></i>
-                    <span>{{ session('success') }}</span>
-                </div>
-            </div>
-            @endif
+    @if(session('error'))
+        <div class="session-alert">
+            <div class="alert-err"><i class="fas fa-circle-exclamation"></i><span>{{ session('error') }}</span></div>
+        </div>
+    @endif
 
-            @if(session('error'))
-            <div class="session-alert">
-                <div class="alert-custom">
-                    <i class="fas fa-circle-exclamation"></i>
-                    <span>{{ session('error') }}</span>
-                </div>
-            </div>
-            @endif
+    <div class="page-header">
+        <div>
+            <h1>Kelola Kategori</h1>
+            <p>Tambah, aktifkan/nonaktifkan, dan hapus kategori project</p>
+            <div class="count-badge"><i class="fas fa-tags"></i> {{ $categories->count() }} kategori</div>
+        </div>
+        <a href="{{ route('admin.categories.create') }}" class="btn-add">
+            <i class="fas fa-plus"></i> Tambah Kategori
+        </a>
+    </div>
 
-            <!-- Page Header -->
-            <div class="page-header">
-                <div>
-                    <h1>Kelola Kategori</h1>
-                    <p>Tambah, aktifkan/nonaktifkan, dan hapus kategori project</p>
-                    <div class="count-badge">
-                        <i class="fas fa-tags"></i>
-                        {{ $categories->count() }} kategori
-                    </div>
-                </div>
-                <a href="{{ route('admin.categories.create') }}" class="btn-add">
-                    <i class="fas fa-plus"></i>
-                    Tambah Kategori
-                </a>
-            </div>
+    <div class="toolbar">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Cari kategori..." autocomplete="off">
+            <i class="fas fa-search"></i>
+        </div>
+        <div class="filter-tabs">
+            <button class="ftab on" data-f="all" onclick="setFilter('all',this)">Semua</button>
+            <button class="ftab" data-f="active" onclick="setFilter('active',this)">Aktif</button>
+            <button class="ftab" data-f="inactive" onclick="setFilter('inactive',this)">Nonaktif</button>
+        </div>
+    </div>
 
-            <!-- Toolbar -->
-            <div class="toolbar">
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Cari kategori..." autocomplete="off">
-                    <i class="fas fa-search"></i>
-                </div>
-                <div class="filter-chips">
-                    <button class="filter-chip active" data-filter="all" onclick="setFilter('all', this)">Semua</button>
-                    <button class="filter-chip" data-filter="active" onclick="setFilter('active', this)">Aktif</button>
-                    <button class="filter-chip" data-filter="inactive" onclick="setFilter('inactive', this)">Nonaktif</button>
-                </div>
-            </div>
-
-            <!-- Table -->
-            <div class="table-card">
-                @if($categories->count() > 0)
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width:35%">Kategori</th>
-                                <th style="width:12%">Status</th>
-                                <th class="hide-mobile" style="width:13%">Project</th>
-                                <th style="width:15%; text-align:right">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="categoryTable">
-                            @php
-                                $catColors = ['green','cyan','amber','rose','indigo'];
-                                $catIcons = ['code','palette','globe','rocket','chart-line','cube','database','layer-group','puzzle-piece','wand-magic-sparkles'];
-                            @endphp
-                            @foreach($categories as $cat)
-                            <tr
-                                data-name="{{ strtolower($cat->name) }}"
-                                data-status="{{ $cat->is_active ? 'active' : 'inactive' }}"
-                            >
+    <div class="table-card">
+        @if($categories->count() > 0)
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:35%">Kategori</th>
+                            <th style="width:12%">Status</th>
+                            <th class="hide-m" style="width:13%">Project</th>
+                            <th style="width:15%; text-align:right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                        @php
+                            $colors = ['g','c','a','r','i'];
+                            $icons = ['code','palette','globe','rocket','chart-line','cube','database','layer-group','puzzle-piece','wand-magic-sparkles'];
+                        @endphp
+                        @foreach($categories as $cat)
+                            <tr data-name="{{ strtolower($cat->name) }}" data-status="{{ $cat->is_active ? 'active' : 'inactive' }}">
                                 <td>
-                                    <div class="cat-name-cell">
-                                        <div class="cat-icon {{ $catColors[$loop->index % count($catColors)] }}">
-                                            <i class="fas fa-{{ $catIcons[$loop->index % count($catIcons)] }}"></i>
+                                    <div class="cat-cell">
+                                        <div class="cat-icon {{ $colors[$loop->index % 5] }}">
+                                            <i class="fas fa-{{ $icons[$loop->index % 10] }}"></i>
                                         </div>
                                         <div>
                                             <div class="cat-name-text">{{ $cat->name }}</div>
@@ -575,155 +496,135 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="status-badge {{ $cat->is_active ? 'status-active' : 'status-inactive' }}">
+                                    <span class="status-pill {{ $cat->is_active ? 'st-on' : 'st-off' }}">
                                         <span class="dot"></span>
                                         {{ $cat->is_active ? 'Aktif' : 'Nonaktif' }}
                                     </span>
                                 </td>
-                                <td class="hide-mobile">
-                                    <div class="projects-count">
+                                <td class="hide-m">
+                                    <div class="proj-count">
                                         <i class="fas fa-folder"></i>
                                         {{ $cat->projects_count }} project
                                     </div>
                                 </td>
                                 <td>
                                     <div class="action-btns">
-                                        <a href="{{ route('admin.categories.edit', $cat->id) }}" class="btn-icon" title="Edit" aria-label="Edit">
+                                        <a href="{{ route('admin.categories.edit', $cat->id) }}" class="btn-ic" title="Edit">
                                             <i class="fas fa-pen-to-square"></i>
                                         </a>
                                         <form class="toggle-form" action="{{ route('admin.categories.toggle', $cat->id) }}" method="POST">
                                             @csrf
                                             @method('PATCH')
-                                            <button
-                                                type="submit"
-                                                class="btn-icon {{ $cat->is_active ? 'toggle-active' : 'toggle-inactive' }}"
-                                                title="{{ $cat->is_active ? 'Nonaktifkan' : 'Aktifkan' }}"
-                                                aria-label="Toggle status"
-                                            >
+                                            <button type="submit"
+                                                class="btn-ic {{ $cat->is_active ? 'tog-on' : 'tog-off' }}"
+                                                title="{{ $cat->is_active ? 'Nonaktifkan' : 'Aktifkan' }}">
                                                 <i class="fas fa-{{ $cat->is_active ? 'toggle-on' : 'toggle-off' }}"></i>
                                             </button>
                                         </form>
-                                        <button
-                                            class="btn-icon danger"
-                                            title="Hapus"
-                                            aria-label="Hapus"
-                                            onclick="confirmDelete('{{ $cat->name }}', '{{ route('admin.categories.destroy', $cat->id) }}')"
-                                        >
+                                        <button class="btn-ic del" title="Hapus"
+                                            onclick="confirmDel('{{ $cat->name }}', '{{ route('admin.categories.destroy', $cat->id) }}')">
                                             <i class="fas fa-trash-can"></i>
                                         </button>
                                     </div>
                                 </td>
                             </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                @else
-                <div class="empty-state">
-                    <div class="empty-icon"><i class="fas fa-tags"></i></div>
-                    <h3>Belum ada kategori</h3>
-                    <p>Mulai tambahkan kategori pertama menggunakan tombol di atas.</p>
-                </div>
-                @endif
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
-
-        </div>
+        @else
+            <div class="empty">
+                <div class="empty-icon"><i class="fas fa-tags"></i></div>
+                <h3>Belum ada kategori</h3>
+                <p>Mulai tambahkan kategori pertama menggunakan tombol di atas.</p>
+            </div>
+        @endif
     </div>
 
-    <!-- Modal Hapus -->
-    <div class="modal-overlay" id="deleteModal">
-        <div class="modal-box">
-            <div class="modal-icon"><i class="fas fa-trash-can"></i></div>
-            <h3>Hapus Kategori</h3>
-            <p>Apakah kamu yakin ingin menghapus kategori <strong id="deleteCatName"></strong>? Semua project yang terkait tidak akan terhapus, tetapi akan kehilangan kategori ini.</p>
-            <form id="deleteForm" method="POST" class="modal-actions">
-                @csrf
-                @method('DELETE')
-                <button type="button" class="btn-modal btn-cancel" onclick="closeDeleteModal()">Batal</button>
-                <button type="submit" class="btn-modal btn-delete-confirm">Ya, Hapus</button>
-            </form>
-        </div>
+</main>
+
+<!-- ═══ MODAL ═══ -->
+<div class="modal-o" id="delModal">
+    <div class="modal-b">
+        <div class="modal-ic"><i class="fas fa-trash-can"></i></div>
+        <h3>Hapus Kategori</h3>
+        <p>Apakah kamu yakin ingin menghapus kategori <strong id="delName"></strong>? Semua project yang terkait tidak akan terhapus, tetapi akan kehilangan kategori ini.</p>
+        <form id="delForm" method="POST" class="modal-acts">
+            @csrf
+            @method('DELETE')
+            <button type="button" class="mbtn c" onclick="closeDel()">Batal</button>
+            <button type="submit" class="mbtn d">Ya, Hapus</button>
+        </form>
     </div>
+</div>
 
-    <script>
-        // === Search ===
-        document.getElementById('searchInput').addEventListener('input', applyFilters);
+<script>
+    var curFilter = 'all';
 
-        // === Filter ===
-        var currentFilter = 'all';
-        function setFilter(filter, btn) {
-            currentFilter = filter;
-            document.querySelectorAll('.filter-chip').forEach(function(c) { c.classList.remove('active'); });
-            btn.classList.add('active');
-            applyFilters();
-        }
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
 
-        function applyFilters() {
-            var query = document.getElementById('searchInput').value.toLowerCase().trim();
-            var rows = document.querySelectorAll('#categoryTable tr');
-            var visibleCount = 0;
+    function setFilter(f, btn) {
+        curFilter = f;
+        document.querySelectorAll('.ftab').forEach(function(t) { t.classList.remove('on'); });
+        btn.classList.add('on');
+        applyFilters();
+    }
 
-            rows.forEach(function(row) {
-                var name = row.dataset.name || '';
-                var status = row.dataset.status || '';
-                var matchSearch = name.includes(query);
-                var matchFilter = currentFilter === 'all' || status === currentFilter;
-                var show = matchSearch && matchFilter;
-                row.style.display = show ? '' : 'none';
-                if (show) visibleCount++;
-            });
+    function applyFilters() {
+        var q = document.getElementById('searchInput').value.toLowerCase().trim();
+        var rows = document.querySelectorAll('#tbody tr');
+        var vis = 0;
 
-            var noResults = document.getElementById('noResults');
-            if (visibleCount === 0 && rows.length > 0) {
-                if (!noResults) {
-                    noResults = document.createElement('tr');
-                    noResults.id = 'noResults';
-                    noResults.innerHTML = '<td colspan="4"><div class="no-results-inline"><i class="fas fa-search"></i><p>Tidak ada kategori yang cocok.</p></div></td>';
-                    document.getElementById('categoryTable').appendChild(noResults);
-                }
-                noResults.style.display = '';
-            } else if (noResults) {
-                noResults.style.display = 'none';
+        rows.forEach(function(r) {
+            var n = r.dataset.name || '';
+            var s = r.dataset.status || '';
+            var show = n.includes(q) && (curFilter === 'all' || s === curFilter);
+            r.style.display = show ? '' : 'none';
+            if (show) vis++;
+        });
+
+        var nr = document.getElementById('noRes');
+        if (vis === 0 && rows.length > 0) {
+            if (!nr) {
+                nr = document.createElement('tr');
+                nr.id = 'noRes';
+                nr.innerHTML = '<td colspan="4"><div class="no-res"><i class="fas fa-search"></i><p>Tidak ada kategori yang cocok.</p></div></td>';
+                document.getElementById('tbody').appendChild(nr);
             }
+            nr.style.display = '';
+        } else if (nr) {
+            nr.style.display = 'none';
         }
+    }
 
-        // === Modal Hapus ===
-        function confirmDelete(name, url) {
-            document.getElementById('deleteCatName').textContent = name;
-            document.getElementById('deleteForm').action = url;
-            document.getElementById('deleteModal').classList.add('open');
-        }
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').classList.remove('open');
-        }
-        document.getElementById('deleteModal').addEventListener('click', function(e) {
-            if (e.target === this) closeDeleteModal();
-        });
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeDeleteModal();
-        });
+    function confirmDel(name, url) {
+        document.getElementById('delName').textContent = name;
+        document.getElementById('delForm').action = url;
+        document.getElementById('delModal').classList.add('open');
+    }
 
-        // === Sidebar toggle ===
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('sidebarOverlay').classList.toggle('open');
-        }
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 768) {
-                document.getElementById('sidebar').classList.remove('open');
-                document.getElementById('sidebarOverlay').classList.remove('open');
-            }
-        });
+    function closeDel() {
+        document.getElementById('delModal').classList.remove('open');
+    }
 
-        // === Auto-hide alerts ===
-        setTimeout(function() {
-            document.querySelectorAll('.session-alert').forEach(function(el) {
-                el.style.transition = 'all 0.4s ease';
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(-10px)';
-                setTimeout(function() { el.remove(); }, 400);
-            });
-        }, 5000);
-    </script>
+    document.getElementById('delModal').addEventListener('click', function(e) {
+        if (e.target === this) closeDel();
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeDel();
+    });
+
+    // Auto-hide alerts
+    setTimeout(function() {
+        document.querySelectorAll('.session-alert').forEach(function(el) {
+            el.style.transition = 'all 0.4s ease';
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(-8px)';
+            setTimeout(function() { el.remove(); }, 400);
+        });
+    }, 5000);
+</script>
+
 </body>
 </html>
