@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Kategori</title>
+    <title>Kelola Pengguna</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -26,7 +26,6 @@
             --danger-bg: rgba(239, 68, 68, 0.1);
             --amber: #f59e0b;
             --amber-subtle: rgba(245, 158, 11, 0.08);
-            --amber-border: rgba(245, 158, 11, 0.15);
             --rose: #f43f5e;
             --rose-subtle: rgba(244, 63, 94, 0.08);
             --indigo: #818cf8;
@@ -255,40 +254,41 @@
         tbody tr:hover { background: rgba(255,255,255,0.02); }
         tbody tr:last-child td { border-bottom: none; }
 
-        .cat-cell { display: flex; align-items: center; gap: 14px; }
-        .cat-icon {
+        /* User cell */
+        .user-cell { display: flex; align-items: center; gap: 14px; }
+        .user-av {
             width: 38px; height: 38px; border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 14px; flex-shrink: 0;
+            font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+            text-transform: uppercase;
         }
-        .cat-icon.g { background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.12); color: var(--accent); }
-        .cat-icon.c { background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.12); color: var(--cyan); }
-        .cat-icon.a { background: var(--amber-subtle); border: 1px solid rgba(245,158,11,0.12); color: var(--amber); }
-        .cat-icon.r { background: var(--rose-subtle); border: 1px solid rgba(244,63,94,0.12); color: var(--rose); }
-        .cat-icon.i { background: var(--indigo-subtle); border: 1px solid rgba(129,140,248,0.12); color: var(--indigo); }
-        .cat-name-text { font-weight: 600; color: var(--text-primary); }
-        .cat-slug {
-            font-size: 11px; color: var(--text-muted); margin-top: 1px;
-            font-family: 'Courier New', monospace;
-        }
+        .av-0 { background: linear-gradient(135deg, #10b981, #059669); }
+        .av-1 { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+        .av-2 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .av-3 { background: linear-gradient(135deg, #818cf8, #6366f1); }
+        .av-4 { background: linear-gradient(135deg, #f43f5e, #e11d48); }
+        .user-name { font-weight: 600; color: var(--text-primary); }
+        .user-email { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
 
-        .status-pill {
+        /* Role badge */
+        .role-pill {
             display: inline-flex; align-items: center; gap: 5px;
             padding: 4px 11px; border-radius: 20px;
             font-size: 11px; font-weight: 600;
         }
-        .status-pill .dot { width: 5px; height: 5px; border-radius: 50%; }
-        .st-on { background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.12); color: var(--accent); }
-        .st-on .dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
-        .st-off { background: rgba(255,255,255,0.03); border: 1px solid var(--input-border); color: var(--text-muted); }
-        .st-off .dot { background: var(--text-muted); }
+        .role-pill .dot { width: 5px; height: 5px; border-radius: 50%; }
+        .rl-admin { background: var(--indigo-subtle); border: 1px solid rgba(129,140,248,0.12); color: var(--indigo); }
+        .rl-admin .dot { background: var(--indigo); box-shadow: 0 0 6px var(--indigo); }
+        .rl-user { background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.12); color: var(--accent); }
+        .rl-user .dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+        .rl-editor { background: var(--amber-subtle); border: 1px solid rgba(245,158,11,0.12); color: var(--amber); }
+        .rl-editor .dot { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+        .rl-def { background: rgba(255,255,255,0.03); border: 1px solid var(--input-border); color: var(--text-muted); }
+        .rl-def .dot { background: var(--text-muted); }
 
-        .proj-count {
-            display: flex; align-items: center; gap: 5px;
-            font-size: 12px; color: var(--text-muted);
-        }
-        .proj-count i { font-size: 11px; opacity: 0.5; }
+        .date-text { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
 
+        /* Action buttons */
         .action-btns { display: flex; gap: 5px; justify-content: flex-end; }
         .btn-ic {
             width: 32px; height: 32px; border-radius: 7px;
@@ -300,41 +300,10 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
         .btn-ic:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
-
-        /* ── Tombol toggle AKTIF (hijau, klik untuk nonaktifkan) ── */
-        .btn-ic.tog-on {
-            background: var(--accent-subtle);
-            border-color: rgba(16,185,129,0.18);
-            color: var(--accent);
-        }
-        .btn-ic.tog-on i { filter: drop-shadow(0 0 3px rgba(16,185,129,0.4)); }
-        .btn-ic.tog-on:hover {
-            background: rgba(245,158,11,0.1);
-            border-color: rgba(245,158,11,0.25);
-            color: var(--amber);
-        }
-        .btn-ic.tog-on:hover i { filter: none; }
-
-        /* ── Tombol toggle NONAKTIF (abu-redup, klik untuk aktifkan) ── */
-        .btn-ic.tog-off {
-            background: rgba(255,255,255,0.02);
-            border-color: rgba(255,255,255,0.06);
-            color: rgba(100,116,139,0.55);
-        }
-        .btn-ic.tog-off:hover {
-            background: var(--accent-subtle);
-            border-color: rgba(16,185,129,0.25);
-            color: var(--accent);
-        }
-
         .btn-ic.del:hover { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,0.18); }
 
-        .toggle-form { display: inline; }
-
         /* Empty */
-        .empty {
-            text-align: center; padding: 60px 20px;
-        }
+        .empty { text-align: center; padding: 60px 20px; }
         .empty-icon {
             width: 64px; height: 64px; border-radius: 18px;
             background: var(--accent-subtle);
@@ -345,9 +314,7 @@
         .empty h3 { font-size: 16px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; }
         .empty p { font-size: 13px; color: var(--text-muted); }
 
-        .no-res {
-            text-align: center; padding: 48px 20px;
-        }
+        .no-res { text-align: center; padding: 48px 20px; }
         .no-res i { font-size: 24px; color: var(--text-muted); opacity: 0.3; margin-bottom: 8px; display: block; }
         .no-res p { font-size: 13px; color: var(--text-muted); }
 
@@ -414,8 +381,8 @@
         </a>
         <div class="topbar-sep"></div>
         <div class="topbar-brand">
-            <div class="topbar-brand-icon"><i class="fas fa-tags"></i></div>
-            <span>Kelola Kategori</span>
+            <div class="topbar-brand-icon"><i class="fas fa-users"></i></div>
+            <span>Kelola Pengguna</span>
         </div>
     </div>
     <div class="topbar-right">
@@ -444,85 +411,79 @@
 
     <div class="page-header">
         <div>
-            <h1>Kelola Kategori</h1>
-            <p>Tambah, aktifkan/nonaktifkan, dan hapus kategori project</p>
-            <div class="count-badge"><i class="fas fa-tags"></i> {{ $categories->count() }} kategori</div>
+            <h1>Kelola Pengguna</h1>
+            <p>Kelola akun pengguna, atur peran, dan pantau aktivitas</p>
+            <div class="count-badge"><i class="fas fa-users"></i> {{ $users->count() }} pengguna</div>
         </div>
-        <a href="{{ route('admin.categories.create') }}" class="btn-add">
-            <i class="fas fa-plus"></i> Tambah Kategori
+        <a href="{{ route('admin.users.create') }}" class="btn-add">
+            <i class="fas fa-plus"></i> Tambah Pengguna
         </a>
     </div>
 
     <div class="toolbar">
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Cari kategori..." autocomplete="off">
+            <input type="text" id="searchInput" placeholder="Cari nama atau email..." autocomplete="off">
             <i class="fas fa-search"></i>
         </div>
         <div class="filter-tabs">
             <button class="ftab on" data-f="all" onclick="setFilter('all',this)">Semua</button>
-            <button class="ftab" data-f="active" onclick="setFilter('active',this)">Aktif</button>
-            <button class="ftab" data-f="inactive" onclick="setFilter('inactive',this)">Nonaktif</button>
+            <button class="ftab" data-f="admin" onclick="setFilter('admin',this)">Admin</button>
+            <button class="ftab" data-f="user" onclick="setFilter('user',this)">User</button>
         </div>
     </div>
 
     <div class="table-card">
-        @if($categories->count() > 0)
+        @if($users->count() > 0)
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
-                            <th style="width:35%">Kategori</th>
-                            <th style="width:12%">Status</th>
-                            <th class="hide-m" style="width:13%">Project</th>
-                            <th style="width:15%; text-align:right">Aksi</th>
+                            <th style="width:28%">Pengguna</th>
+                            <th class="hide-m" style="width:24%">Email</th>
+                            <th style="width:14%">Peran</th>
+                            <th class="hide-m" style="width:14%">Bergabung</th>
+                            <th style="width:14%; text-align:right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tbody">
-                        @php
-                            $colors = ['g','c','a','r','i'];
-                            $icons = ['code','palette','globe','rocket','chart-line','cube','database','layer-group','puzzle-piece','wand-magic-sparkles'];
-                        @endphp
-                        @foreach($categories as $cat)
-                            <tr data-name="{{ strtolower($cat->name) }}" data-status="{{ $cat->is_active ? 'active' : 'inactive' }}">
+                        @foreach($users as $user)
+                            @php
+                                $roleSlug = strtolower($user->role->slug ?? '');
+                                $roleClass = 'rl-def';
+                                $roleLabel = ucfirst($roleSlug) ?: '-';
+                                if ($roleSlug === 'admin') { $roleClass = 'rl-admin'; $roleLabel = 'Admin'; }
+                                elseif ($roleSlug === 'user') { $roleClass = 'rl-user'; $roleLabel = 'User'; }
+                                elseif ($roleSlug === 'editor') { $roleClass = 'rl-editor'; $roleLabel = 'Editor'; }
+                            @endphp
+                            <tr data-name="{{ strtolower($user->name) }}" data-email="{{ strtolower($user->email) }}" data-role="{{ $roleSlug }}">
                                 <td>
-                                    <div class="cat-cell">
-                                        <div class="cat-icon {{ $colors[$loop->index % 5] }}">
-                                            <i class="fas fa-{{ $icons[$loop->index % 10] }}"></i>
-                                        </div>
+                                    <div class="user-cell">
+                                        <div class="user-av av-{{ $loop->index % 5 }}">{{ substr($user->name, 0, 2) }}</div>
                                         <div>
-                                            <div class="cat-name-text">{{ $cat->name }}</div>
-                                            <div class="cat-slug">{{ $cat->slug }}</div>
+                                            <div class="user-name">{{ $user->name }}</div>
+                                            <div class="user-email hide-m">{{ $user->email }}</div>
                                         </div>
                                     </div>
                                 </td>
+                                <td class="hide-m">
+                                    <span style="font-size:13px">{{ $user->email }}</span>
+                                </td>
                                 <td>
-                                    <span class="status-pill {{ $cat->is_active ? 'st-on' : 'st-off' }}">
+                                    <span class="role-pill {{ $roleClass }}">
                                         <span class="dot"></span>
-                                        {{ $cat->is_active ? 'Aktif' : 'Nonaktif' }}
+                                        {{ $roleLabel }}
                                     </span>
                                 </td>
                                 <td class="hide-m">
-                                    <div class="proj-count">
-                                        <i class="fas fa-folder"></i>
-                                        {{ $cat->projects_count }} project
-                                    </div>
+                                    <span class="date-text">{{ $user->created_at->format('d M Y') }}</span>
                                 </td>
                                 <td>
                                     <div class="action-btns">
-                                        <a href="{{ route('admin.categories.edit', $cat->id) }}" class="btn-ic" title="Edit">
+                                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn-ic" title="Edit">
                                             <i class="fas fa-pen-to-square"></i>
                                         </a>
-                                        <form class="toggle-form" action="{{ route('admin.categories.toggle', $cat->id) }}" method="POST">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit"
-                                                class="btn-ic {{ $cat->is_active ? 'tog-on' : 'tog-off' }}"
-                                                title="{{ $cat->is_active ? 'Nonaktifkan' : 'Aktifkan' }}">
-                                                <i class="fas fa-{{ $cat->is_active ? 'toggle-on' : 'toggle-off' }}"></i>
-                                            </button>
-                                        </form>
                                         <button class="btn-ic del" title="Hapus"
-                                            onclick="confirmDel('{{ $cat->name }}', '{{ route('admin.categories.destroy', $cat->id) }}')">
+                                            onclick="confirmDel('{{ $user->name }}', '{{ route('admin.users.destroy', $user->id) }}')">
                                             <i class="fas fa-trash-can"></i>
                                         </button>
                                     </div>
@@ -534,9 +495,9 @@
             </div>
         @else
             <div class="empty">
-                <div class="empty-icon"><i class="fas fa-tags"></i></div>
-                <h3>Belum ada kategori</h3>
-                <p>Mulai tambahkan kategori pertama menggunakan tombol di atas.</p>
+                <div class="empty-icon"><i class="fas fa-users"></i></div>
+                <h3>Belum ada pengguna</h3>
+                <p>Mulai tambahkan pengguna pertama menggunakan tombol di atas.</p>
             </div>
         @endif
     </div>
@@ -547,8 +508,8 @@
 <div class="modal-o" id="delModal">
     <div class="modal-b">
         <div class="modal-ic"><i class="fas fa-trash-can"></i></div>
-        <h3>Hapus Kategori</h3>
-        <p>Apakah kamu yakin ingin menghapus kategori <strong id="delName"></strong>? Semua project yang terkait tidak akan terhapus, tetapi akan kehilangan kategori ini.</p>
+        <h3>Hapus Pengguna</h3>
+        <p>Apakah kamu yakin ingin menghapus pengguna <strong id="delName"></strong>? Semua data terkait pengguna ini akan ikut terhapus.</p>
         <form id="delForm" method="POST" class="modal-acts">
             @csrf
             @method('DELETE')
@@ -577,8 +538,9 @@
 
         rows.forEach(function(r) {
             var n = r.dataset.name || '';
-            var s = r.dataset.status || '';
-            var show = n.includes(q) && (curFilter === 'all' || s === curFilter);
+            var e = r.dataset.email || '';
+            var role = r.dataset.role || '';
+            var show = (n.includes(q) || e.includes(q)) && (curFilter === 'all' || role === curFilter);
             r.style.display = show ? '' : 'none';
             if (show) vis++;
         });
@@ -588,7 +550,7 @@
             if (!nr) {
                 nr = document.createElement('tr');
                 nr.id = 'noRes';
-                nr.innerHTML = '<td colspan="4"><div class="no-res"><i class="fas fa-search"></i><p>Tidak ada kategori yang cocok.</p></div></td>';
+                nr.innerHTML = '<td colspan="5"><div class="no-res"><i class="fas fa-search"></i><p>Tidak ada pengguna yang cocok.</p></div></td>';
                 document.getElementById('tbody').appendChild(nr);
             }
             nr.style.display = '';
@@ -615,7 +577,6 @@
         if (e.key === 'Escape') closeDel();
     });
 
-    // Auto-hide alerts
     setTimeout(function() {
         document.querySelectorAll('.session-alert').forEach(function(el) {
             el.style.transition = 'all 0.4s ease';

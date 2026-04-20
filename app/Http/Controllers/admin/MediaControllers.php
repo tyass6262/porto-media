@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Media;
-use Illuminate\Support\Facades\Storage;
 
-class MediaController
+class MediaController extends Controller
 {
     public function destroy(Media $media)
     {
-        Storage::delete($media->file_path);
         $media->delete();
-        return back();
+
+        return back()->with('success', 'Media berhasil dihapus');
     }
 }

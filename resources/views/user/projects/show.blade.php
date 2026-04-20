@@ -1,662 +1,572 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $project->title }} — Detail Project</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        :root {
-            --bg-primary: #0a0f1a;
-            --bg-secondary: #111827;
-            --card-bg: rgba(17, 24, 39, 0.65);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --accent: #10b981;
-            --accent-hover: #34d399;
-            --accent-glow: rgba(16, 185, 129, 0.25);
-            --accent-subtle: rgba(16, 185, 129, 0.08);
-            --cyan: #06b6d4;
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --input-bg: rgba(15, 23, 42, 0.8);
-            --input-border: rgba(255, 255, 255, 0.1);
-            --danger: #ef4444;
-            --danger-bg: rgba(239, 68, 68, 0.1);
-            --amber: #f59e0b;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ $project->title }}</title>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: var(--bg-primary);
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
+<style>
+    :root {
+        --bg: #0a0f1a;
+        --card: rgba(17, 24, 39, 0.6);
+        --border: rgba(255, 255, 255, 0.07);
+        --border-hover: rgba(255, 255, 255, 0.13);
+        --accent: #10b981;
+        --accent-hover: #34d399;
+        --accent-glow: rgba(16, 185, 129, 0.25);
+        --accent-subtle: rgba(16, 185, 129, 0.08);
+        --cyan: #06b6d4;
+        --cyan-subtle: rgba(6, 182, 212, 0.08);
+        --text-1: #f1f5f9;
+        --text-2: #94a3b8;
+        --text-3: #64748b;
+        --amber: #f59e0b;
+        --amber-subtle: rgba(245, 158, 11, 0.08);
+        --amber-border: rgba(245, 158, 11, 0.18);
+    }
 
-        /* === Background === */
-        .bg-layer {
-            position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
-        }
-        .bg-layer::before {
-            content: ''; position: absolute; top: -40%; left: -20%;
-            width: 80vw; height: 80vw;
-            background: radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 70%);
-            animation: floatBlob1 20s ease-in-out infinite;
-        }
-        .bg-layer::after {
-            content: ''; position: absolute; bottom: -30%; right: -20%;
-            width: 70vw; height: 70vw;
-            background: radial-gradient(circle, rgba(6,182,212,0.05) 0%, transparent 70%);
-            animation: floatBlob2 25s ease-in-out infinite;
-        }
-        @keyframes floatBlob1 {
-            0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(10%,15%) scale(1.1)} 66%{transform:translate(-5%,8%) scale(.95)}
-        }
-        @keyframes floatBlob2 {
-            0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(-12%,-10%) scale(1.05)} 66%{transform:translate(8%,-5%) scale(.9)}
-        }
-        .grid-pattern {
-            position: fixed; inset: 0; z-index: 1; pointer-events: none;
-            background-image: linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);
-            background-size: 60px 60px;
-            mask-image: radial-gradient(ellipse at center top, black 20%, transparent 70%);
-        }
-        .particles { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
-        .particle {
-            position: absolute; width: 3px; height: 3px; background: var(--accent);
-            border-radius: 50%; opacity: 0; animation: particleFloat linear infinite;
-        }
-        @keyframes particleFloat {
-            0%{opacity:0;transform:translateY(100vh) scale(0)} 10%{opacity:.5} 90%{opacity:.2} 100%{opacity:0;transform:translateY(-10vh) scale(1)}
-        }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* === Navbar === */
-        .top-nav {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(10,15,26,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--card-border);
-            padding: 0 32px; height: 64px;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .nav-brand {
-            display: flex; align-items: center; gap: 12px; text-decoration: none;
-        }
-        .nav-logo {
-            width: 36px; height: 36px;
-            background: linear-gradient(135deg, var(--accent), var(--cyan));
-            border-radius: 10px; display: flex; align-items: center; justify-content: center;
-            font-size: 16px; color: white;
-        }
-        .nav-brand-text { font-size: 18px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.3px; }
-        .nav-back {
-            display: flex; align-items: center; gap: 8px;
-            padding: 8px 16px; border-radius: 10px;
-            background: rgba(255,255,255,0.04); border: 1px solid var(--input-border);
-            color: var(--text-secondary); font-size: 13px; font-weight: 500;
-            text-decoration: none; transition: all 0.25s;
-        }
-        .nav-back:hover { background: rgba(255,255,255,0.07); color: var(--text-primary); border-color: rgba(255,255,255,0.15); }
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background: var(--bg);
+        color: var(--text-1);
+        min-height: 100vh;
+        line-height: 1.6;
+    }
 
-        /* === Main === */
-        .main-content {
-            position: relative; z-index: 10;
-            max-width: 900px; margin: 0 auto;
-            padding: 40px 24px 80px;
-        }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 3px; }
 
-        /* Breadcrumb */
-        .breadcrumb {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 13px; color: var(--text-muted); margin-bottom: 28px;
-        }
-        .breadcrumb a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
-        .breadcrumb a:hover { color: var(--accent); }
-        .breadcrumb i { font-size: 10px; opacity: 0.5; }
+    /* ═══ TOPBAR ═══ */
+    .topbar {
+        position: sticky; top: 0; z-index: 100;
+        background: rgba(10, 15, 26, 0.82);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-bottom: 1px solid var(--border);
+        height: 56px;
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 32px;
+    }
 
-        /* Hero Section */
-        .detail-hero {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-            animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
-        }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); filter: blur(3px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
 
-        .detail-hero::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: linear-gradient(90deg, var(--accent), var(--cyan));
-        }
+    .btn-back {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 6px 13px; border-radius: 7px;
+        font-size: 12px; font-weight: 500;
+        color: var(--text-3); text-decoration: none;
+        background: transparent;
+        border: 1px solid var(--border);
+        cursor: pointer; transition: all 0.18s;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .btn-back i { font-size: 10px; transition: transform 0.18s; }
+    .btn-back:hover {
+        color: var(--text-1);
+        background: rgba(255,255,255,0.05);
+        border-color: var(--border-hover);
+    }
+    .btn-back:hover i { transform: translateX(-1px); }
 
-        .hero-glow {
-            position: absolute; top: -80px; right: -80px;
-            width: 280px; height: 280px;
-            background: radial-gradient(circle, rgba(16,185,129,0.08), transparent 70%);
-            border-radius: 50%; pointer-events: none;
-        }
+    .topbar-sep { width: 1px; height: 20px; background: var(--border); }
 
-        .hero-top {
-            display: flex; align-items: flex-start; justify-content: space-between;
-            gap: 20px; margin-bottom: 20px; position: relative; z-index: 2;
-            flex-wrap: wrap;
-        }
+    .topbar-title {
+        font-size: 14px; font-weight: 700; color: var(--text-1);
+        letter-spacing: -0.02em;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        max-width: 400px;
+    }
 
-        .hero-icon {
-            width: 52px; height: 52px; border-radius: 14px;
-            background: var(--accent-subtle); border: 1px solid rgba(16,185,129,0.2);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; color: var(--accent); flex-shrink: 0;
-        }
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
 
-        .hero-title-area { flex: 1; min-width: 0; }
-        .hero-title-area h1 {
-            font-size: 28px; font-weight: 800; color: var(--text-primary);
-            letter-spacing: -0.5px; line-height: 1.25; margin-bottom: 6px;
-            word-break: break-word;
-        }
+    .status-pill {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 4px 11px; border-radius: 6px;
+        font-size: 11px; font-weight: 600;
+        text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .status-pill.published { background: var(--accent-subtle); color: var(--accent); }
+    .status-pill.draft { background: var(--amber-subtle); color: var(--amber); }
+    .status-pill .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
-        .hero-actions {
-            display: flex; gap: 8px; flex-shrink: 0;
-        }
-        .btn-action {
-            width: 40px; height: 40px; border-radius: 10px;
-            background: rgba(255,255,255,0.04); border: 1px solid var(--input-border);
-            color: var(--text-muted); cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px; transition: all 0.25s; text-decoration: none;
-        }
-        .btn-action:hover { background: rgba(255,255,255,0.07); color: var(--text-primary); border-color: rgba(255,255,255,0.15); }
-        .btn-action.danger:hover { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,0.2); }
+    /* ═══ PAGE ═══ */
+    .page {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 28px 32px 60px;
+    }
 
-        .hero-desc {
-            font-size: 15px; color: var(--text-secondary); line-height: 1.75;
-            position: relative; z-index: 2; word-break: break-word;
-        }
+    .breadcrumb {
+        display: flex; align-items: center; gap: 8px;
+        margin-bottom: 24px;
+        font-size: 13px; color: var(--text-3);
+    }
+    .breadcrumb a { color: var(--accent); text-decoration: none; transition: color 0.15s; }
+    .breadcrumb a:hover { color: var(--accent-hover); }
+    .breadcrumb .sep { opacity: 0.4; }
 
-        .hero-meta-row {
-            display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
-            margin-top: 24px; position: relative; z-index: 2;
-        }
+    /* ── Hero ── */
+    .hero { margin-bottom: 20px; }
 
-        .meta-badge {
-            display: inline-flex; align-items: center; gap: 7px;
-            padding: 6px 14px; border-radius: 20px;
-            font-size: 12.5px; font-weight: 600; letter-spacing: 0.2px;
-        }
-        .meta-badge i { font-size: 11px; }
+    .hero h1 {
+        font-size: 28px; font-weight: 800;
+        color: var(--text-1);
+        letter-spacing: -0.03em; line-height: 1.25;
+        margin-bottom: 16px;
+    }
 
-        .badge-status-published {
-            background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); color: var(--accent);
-        }
-        .badge-status-draft {
-            background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); color: var(--amber);
-        }
+    .hero-meta {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
+        margin-bottom: 20px;
+    }
 
-        .meta-text {
-            display: flex; align-items: center; gap: 7px;
-            font-size: 13px; color: var(--text-muted);
-        }
-        .meta-text i { font-size: 12px; opacity: 0.7; }
+    .meta-chip {
+        display: inline-flex; align-items: center; gap: 5px;
+        font-size: 13px; color: var(--text-3);
+    }
+    .meta-chip i { font-size: 12px; }
 
-        /* === Section Cards === */
-        .section-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 32px;
-            margin-bottom: 20px;
-            animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
-        }
-        .section-card:nth-child(2) { animation-delay: 0.08s; }
-        .section-card:nth-child(3) { animation-delay: 0.16s; }
+    .hero-desc {
+        font-size: 15px; color: var(--text-2);
+        line-height: 1.75; max-width: 680px;
+    }
 
-        .section-label {
-            display: flex; align-items: center; gap: 10px;
-            font-size: 14px; font-weight: 700; color: var(--text-primary);
-            margin-bottom: 20px; letter-spacing: 0.2px;
-        }
-        .section-label i {
-            width: 32px; height: 32px; border-radius: 9px;
-            display: flex; align-items: center; justify-content: center; font-size: 14px;
-        }
-        .icon-cyan { background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2); color: var(--cyan); }
-        .icon-amber { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); color: var(--amber); }
-        .icon-rose { background: rgba(244,63,94,0.1); border: 1px solid rgba(244,63,94,0.2); color: #f43f5e; }
+    /* ── Action Bar ── */
+    .action-bar {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+        padding: 16px 18px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin-bottom: 36px;
+    }
 
-        /* Kategori Chips */
-        .category-chips {
-            display: flex; flex-wrap: wrap; gap: 10px;
-        }
-        .cat-chip {
-            display: inline-flex; align-items: center; gap: 7px;
-            padding: 8px 16px; border-radius: 10px;
-            font-size: 13px; font-weight: 500;
-            background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.15);
-            color: var(--cyan);
-        }
-        .cat-chip i { font-size: 11px; opacity: 0.7; }
+    .action-info {
+        display: flex; align-items: center; gap: 14px;
+        flex: 1; min-width: 0;
+    }
 
-        .empty-chips {
-            font-size: 14px; color: var(--text-muted); font-style: italic;
-        }
+    .action-av {
+        width: 40px; height: 40px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--cyan));
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
 
-        /* === Media Gallery === */
-        .media-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 14px;
-        }
-        .media-item {
-            position: relative;
-            border-radius: 14px;
-            overflow: hidden;
-            border: 1px solid var(--card-border);
-            background: var(--input-bg);
-            transition: all 0.3s;
-            cursor: pointer;
-            aspect-ratio: 4/3;
-        }
-        .media-item:hover {
-            border-color: rgba(255,255,255,0.15);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 28px -4px rgba(0,0,0,0.4);
-        }
-        .media-item img {
-            width: 100%; height: 100%; object-fit: cover;
-            transition: transform 0.4s;
-        }
-        .media-item:hover img { transform: scale(1.06); }
+    .ai-label {
+        font-size: 11px; color: var(--text-3);
+        text-transform: uppercase; letter-spacing: 0.06em;
+        font-weight: 500; margin-bottom: 1px;
+    }
+    .ai-name { font-size: 14px; font-weight: 600; color: var(--text-1); }
 
-        .media-overlay {
-            position: absolute; inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
-            display: flex; flex-direction: column; justify-content: flex-end;
-            padding: 14px;
-            opacity: 0; transition: opacity 0.3s;
-        }
-        .media-item:hover .media-overlay { opacity: 1; }
+    .action-buttons { display: flex; gap: 8px; flex-shrink: 0; }
 
-        .media-overlay .media-name {
-            font-size: 12px; font-weight: 600; color: white;
-            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-        }
-        .media-overlay .media-size {
-            font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px;
-        }
-        .media-overlay .media-expand {
-            position: absolute; top: 10px; right: 10px;
-            width: 30px; height: 30px; border-radius: 8px;
-            background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
-            border: none; color: white; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; transition: background 0.2s;
-        }
-        .media-overlay .media-expand:hover { background: rgba(255,255,255,0.25); }
+    .btn-toggle {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 9px 18px; border-radius: 9px;
+        font-size: 13px; font-weight: 600;
+        border: none; cursor: pointer;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+    .btn-toggle i { font-size: 12px; }
 
-        /* Non-image media item */
-        .media-item-non-image {
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            gap: 10px; text-align: center; padding: 20px;
-            aspect-ratio: 4/3;
-        }
-        .media-item-non-image i {
-            font-size: 36px; color: var(--text-muted); opacity: 0.5;
-        }
-        .media-item-non-image .file-name {
-            font-size: 12px; font-weight: 500; color: var(--text-secondary);
-            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-            max-width: 100%;
-        }
-        .media-item-non-image .file-ext {
-            font-size: 11px; color: var(--text-muted); text-transform: uppercase;
-        }
+    .btn-toggle.publish {
+        background: var(--accent); color: #fff;
+        box-shadow: 0 3px 14px var(--accent-glow);
+    }
+    .btn-toggle.publish:hover {
+        background: var(--accent-hover);
+        box-shadow: 0 5px 20px rgba(16,185,129,0.35);
+        transform: translateY(-1px);
+    }
 
-        .empty-media {
-            text-align: center; padding: 40px 20px;
-        }
-        .empty-media i {
-            font-size: 36px; color: var(--text-muted); opacity: 0.3; margin-bottom: 12px;
-        }
-        .empty-media p { font-size: 14px; color: var(--text-muted); }
+    .btn-toggle.unpublish {
+        background: var(--amber-subtle); color: var(--amber);
+        border: 1px solid var(--amber-border);
+    }
+    .btn-toggle.unpublish:hover {
+        background: rgba(245, 158, 11, 0.14);
+        border-color: rgba(245, 158, 11, 0.3);
+        transform: translateY(-1px);
+    }
 
-        /* === Lightbox === */
-        .lightbox {
-            position: fixed; inset: 0; z-index: 2000;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; visibility: hidden; transition: all 0.3s;
-            padding: 40px; cursor: zoom-out;
-        }
-        .lightbox.open { opacity: 1; visibility: visible; }
-        .lightbox img {
-            max-width: 90%; max-height: 85vh;
-            border-radius: 12px;
-            box-shadow: 0 24px 80px -12px rgba(0,0,0,0.6);
-            transform: scale(0.9); transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
-        }
-        .lightbox.open img { transform: scale(1); }
-        .lightbox-close {
-            position: absolute; top: 20px; right: 20px;
-            width: 44px; height: 44px; border-radius: 12px;
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1);
-            color: white; cursor: pointer; font-size: 18px;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
-        }
-        .lightbox-close:hover { background: rgba(255,255,255,0.2); }
-        .lightbox-info {
-            position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
-            background: rgba(30,41,59,0.9); border: 1px solid var(--card-border);
-            border-radius: 10px; padding: 10px 20px;
-            font-size: 13px; color: var(--text-secondary); white-space: nowrap;
-        }
+    /* ── Section ── */
+    .section { margin-bottom: 36px; }
 
-        /* === Modal Hapus === */
-        .modal-overlay {
-            position: fixed; inset: 0; z-index: 1000;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; visibility: hidden; transition: all 0.25s; padding: 24px;
-        }
-        .modal-overlay.open { opacity: 1; visibility: visible; }
-        .modal-box {
-            background: #1e293b; border: 1px solid var(--card-border);
-            border-radius: 20px; padding: 32px; max-width: 400px; width: 100%;
-            transform: scale(0.9) translateY(20px);
-            transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
-            box-shadow: 0 25px 60px -12px rgba(0,0,0,0.5);
-        }
-        .modal-overlay.open .modal-box { transform: scale(1) translateY(0); }
-        .modal-icon {
-            width: 56px; height: 56px; border-radius: 16px;
-            background: var(--danger-bg); border: 1px solid rgba(239,68,68,0.2);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; color: var(--danger); margin-bottom: 20px;
-        }
-        .modal-box h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
-        .modal-box p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 28px; }
-        .modal-box p strong { color: var(--text-secondary); }
-        .modal-actions { display: flex; gap: 10px; }
-        .btn-modal {
-            flex: 1; padding: 12px; border-radius: 10px;
-            font-size: 14px; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif;
-            cursor: pointer; transition: all 0.2s; border: none;
-        }
-        .btn-cancel { background: rgba(255,255,255,0.05); border: 1px solid var(--input-border); color: var(--text-secondary); }
-        .btn-cancel:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
-        .btn-delete-confirm { background: var(--danger); color: white; }
-        .btn-delete-confirm:hover { background: #dc2626; box-shadow: 0 4px 16px rgba(239,68,68,0.3); }
+    .section-head {
+        display: flex; align-items: center; gap: 10px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+    .section-head i { font-size: 14px; color: var(--accent); }
+    .section-head h3 {
+        font-size: 15px; font-weight: 700; color: var(--text-1);
+        letter-spacing: -0.01em;
+    }
+    .section-head .cnt {
+        margin-left: auto;
+        font-size: 12px; color: var(--text-3); font-weight: 500;
+        background: rgba(255,255,255,0.04);
+        padding: 2px 10px; border-radius: 100px;
+    }
 
-        /* Session alert */
-        .session-alert { max-width: 900px; margin: 0 auto; padding: 0 24px; }
-        .alert-custom {
-            background: var(--danger-bg); border: 1px solid rgba(239,68,68,0.2);
-            border-radius: 12px; padding: 14px 18px; margin-top: 20px; margin-bottom: 8px;
-            display: flex; align-items: center; gap: 12px;
-            font-size: 14px; color: #fca5a5; animation: shakeIn 0.5s ease;
-        }
-        .alert-custom i { color: var(--danger); font-size: 16px; flex-shrink: 0; }
-        @keyframes shakeIn {
-            0%{opacity:0;transform:translateX(-10px)} 25%{transform:translateX(6px)} 50%{transform:translateX(-4px)} 75%{transform:translateX(2px)} 100%{opacity:1;transform:translateX(0)}
-        }
+    /* ── Tags ── */
+    .tags-row { display: flex; flex-wrap: wrap; gap: 8px; }
 
-        /* === Responsive === */
-        @media (max-width: 768px) {
-            .top-nav { padding: 0 16px; }
-            .nav-brand-text { display: none; }
-            .main-content { padding: 24px 16px 60px; }
-            .detail-hero { padding: 28px 24px; }
-            .section-card { padding: 24px 20px; }
-            .hero-title-area h1 { font-size: 22px; }
-            .hero-top { flex-direction: column; }
-            .hero-actions { align-self: flex-start; }
-            .media-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-        }
+    .tag {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 6px 14px; border-radius: 8px;
+        font-size: 13px; font-weight: 500;
+        background: var(--cyan-subtle);
+        border: 1px solid rgba(6, 182, 212, 0.12);
+        color: var(--cyan); transition: all 0.2s;
+    }
+    .tag:hover {
+        background: rgba(6, 182, 212, 0.13);
+        border-color: rgba(6, 182, 212, 0.22);
+        transform: translateY(-1px);
+    }
+    .tag i { font-size: 10px; opacity: 0.6; }
 
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-    </style>
+    .empty-inline {
+        text-align: center; padding: 36px 20px;
+        color: var(--text-3); font-size: 13px;
+        background: rgba(255,255,255,0.015);
+        border: 1px dashed var(--border);
+        border-radius: 12px;
+    }
+    .empty-inline i { display: block; font-size: 24px; margin-bottom: 8px; opacity: 0.3; }
+
+    /* ── Media Grid ── */
+    .media-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 14px;
+    }
+
+    .mcard {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.25s ease;
+    }
+    .mcard:hover {
+        border-color: var(--border-hover);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    .mcard-preview {
+        position: relative;
+        aspect-ratio: 16/10;
+        background: rgba(2, 6, 23, 0.8);
+        overflow: hidden;
+    }
+    .mcard-preview img {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+        transition: transform 0.35s ease;
+        cursor: zoom-in;
+    }
+    .mcard:hover .mcard-preview img { transform: scale(1.04); }
+    .mcard-preview video { width: 100%; height: 100%; object-fit: cover; }
+    .mcard-preview iframe { width: 100%; height: 100%; border: none; }
+
+    .mcard-type {
+        position: absolute; top: 8px; left: 8px;
+        padding: 3px 9px; border-radius: 6px;
+        font-size: 10px; font-weight: 600;
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(4px);
+        color: var(--text-2);
+        display: flex; align-items: center; gap: 4px;
+        text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .mcard-type i { font-size: 9px; color: var(--accent); }
+
+    .mcard.file-card .mcard-preview {
+        aspect-ratio: auto;
+        padding: 28px;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+    }
+    .file-icon-wrap {
+        width: 56px; height: 56px; border-radius: 14px;
+        background: var(--accent-subtle);
+        border: 1px solid rgba(16,185,129,0.1);
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 10px;
+    }
+    .file-icon-wrap i { font-size: 22px; color: var(--accent); }
+    .file-label {
+        font-size: 12px; color: var(--text-3); margin-bottom: 12px;
+        word-break: break-all; text-align: center; max-width: 100%;
+    }
+    .btn-dl {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 8px 18px; border-radius: 8px;
+        font-size: 12px; font-weight: 600;
+        color: var(--cyan); text-decoration: none;
+        background: var(--cyan-subtle);
+        border: 1px solid rgba(6,182,212,0.12);
+        transition: all 0.2s;
+    }
+    .btn-dl:hover {
+        background: rgba(6,182,212,0.14);
+        border-color: rgba(6,182,212,0.25);
+    }
+    .btn-dl i { font-size: 11px; }
+
+    .mcard-bottom {
+        padding: 10px 14px;
+        display: flex; align-items: center;
+        border-top: 1px solid rgba(255,255,255,0.03);
+    }
+    .mcard-fname {
+        font-size: 11px; color: var(--text-3);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        flex: 1;
+    }
+
+    /* ═══ LIGHTBOX ═══ */
+    .lb {
+        position: fixed; inset: 0; z-index: 10000;
+        background: rgba(0,0,0,0.92);
+        backdrop-filter: blur(20px);
+        display: none; justify-content: center; align-items: center;
+        cursor: zoom-out;
+    }
+    .lb.open { display: flex; animation: lbIn 0.2s ease; }
+    .lb img {
+        max-width: 90vw; max-height: 85vh;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .lb-x {
+        position: absolute; top: 18px; right: 22px;
+        width: 38px; height: 38px; border-radius: 9px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #fff; font-size: 15px; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        transition: all 0.2s;
+    }
+    .lb-x:hover { background: rgba(255,255,255,0.14); }
+    @keyframes lbIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 640px) {
+        .topbar { padding: 0 16px; }
+        .topbar-title { max-width: 140px; }
+        .page { padding: 20px 16px 50px; }
+        .hero h1 { font-size: 22px; }
+        .media-grid { grid-template-columns: 1fr; }
+        .hero-meta { gap: 10px; }
+        .action-bar { flex-direction: column; align-items: stretch; }
+        .action-buttons { justify-content: stretch; }
+        .btn-toggle { justify-content: center; flex: 1; }
+    }
+</style>
 </head>
 <body>
 
-    <div class="bg-layer"></div>
-    <div class="grid-pattern"></div>
-    <div class="particles" id="particles"></div>
-
-    <!-- Navbar -->
-    <nav class="top-nav">
-        <a href="/" class="nav-brand">
-            <div class="nav-logo"><i class="fas fa-shield-halved"></i></div>
-            <span class="nav-brand-text">MyApp</span>
-        </a>
-        <a href="{{ route('user.projects.index') }}" class="nav-back">
+<!-- ═══ TOPBAR ═══ -->
+<header class="topbar">
+    <div class="topbar-left">
+        <a href="{{ route('user.projects.index') }}" class="btn-back">
             <i class="fas fa-arrow-left"></i>
             Kembali
         </a>
-    </nav>
-
-    <!-- Session Error -->
-    @if(session('error'))
-    <div class="session-alert">
-        <div class="alert-custom">
-            <i class="fas fa-circle-exclamation"></i>
-            <span>{{ session('error') }}</span>
-        </div>
+        <div class="topbar-sep"></div>
+        <span class="topbar-title">{{ $project->title }}</span>
     </div>
-    @endif
+    <div class="topbar-right">
+        <span class="status-pill {{ $project->status == 'published' ? 'published' : 'draft' }}">
+            <span class="dot"></span>
+            {{ $project->status }}
+        </span>
+    </div>
+</header>
 
-    <!-- Main Content -->
-    <main class="main-content">
+<!-- ═══ PAGE ═══ -->
+<main class="page">
 
-        <!-- Breadcrumb -->
-        <div class="breadcrumb">
-            <a href="{{ route('user.projects.index') }}">Projects</a>
-            <i class="fas fa-chevron-right"></i>
-            <span style="color:var(--text-secondary)">{{ Str::limit($project->title, 40) }}</span>
+    <div class="breadcrumb">
+        <a href="{{ route('user.projects.index') }}">Project Saya</a>
+        <span class="sep">/</span>
+        <span>Detail</span>
+    </div>
+
+    <section class="hero">
+        <h1>{{ $project->title }}</h1>
+        <div class="hero-meta">
+            <span class="meta-chip"><i class="far fa-calendar"></i> {{ $project->created_at->format('d M Y') }}</span>
+            <span class="meta-chip"><i class="fas fa-photo-film"></i> {{ $project->media->count() }} media</span>
+            <span class="meta-chip"><i class="far fa-user"></i> {{ $project->user->name }}</span>
         </div>
-
-        <!-- Hero -->
-        <div class="detail-hero">
-            <div class="hero-glow"></div>
-            <div class="hero-top">
-                <div style="display:flex; gap:18px; align-items:flex-start; flex:1; min-width:0;">
-                    <div class="hero-icon">
-                    <i class="fas fa-{{ ['code','database','globe','rocket','palette','chart-line','cube','layer-group'][0] }}"></i>
-                    </div>
-                    <div class="hero-title-area">
-                        <h1>{{ $project->title }}</h1>
-                    </div>
-                </div>
-                <div class="hero-actions">
-                    <button class="btn-action danger" title="Hapus project" aria-label="Hapus" onclick="confirmDelete('{{ $project->title }}', '{{ route('user.projects.destroy', $project->id) }}')">
-                        <i class="fas fa-trash-can"></i>
-                    </button>
-                </div>
-            </div>
-
-            @if($project->description)
+        @if($project->description)
             <p class="hero-desc">{{ $project->description }}</p>
-            @endif
+        @endif
+    </section>
 
-            <div class="hero-meta-row">
-                <span class="meta-badge badge-status-{{ $project->status }}">
-                    <i class="fas fa-{{ $project->status === 'published' ? 'circle-check' : 'pencil' }}"></i>
-                    {{ ucfirst($project->status) }}
-                </span>
-                <span class="meta-text">
-                    <i class="fas fa-calendar"></i>
-                    {{ $project->created_at->format('d M Y') }}
-                </span>
-                <span class="meta-text">
-                    <i class="fas fa-clock"></i>
-                    {{ $project->created_at->diffForHumans() }}
-                </span>
-                <span class="meta-text">
-                    <i class="fas fa-hashtag"></i>
-                    #{{ str_pad($project->id, 3, '0', STR_PAD_LEFT) }}
-                </span>
+    <!-- Action Bar -->
+    <div class="action-bar">
+        <div class="action-info">
+            <div class="action-av">{{ substr($project->user->name, 0, 1) }}</div>
+            <div>
+                <div class="ai-label">Dibuat oleh</div>
+                <div class="ai-name">{{ $project->user->name }}</div>
             </div>
         </div>
-
-        <!-- Kategori -->
-        <div class="section-card">
-            <div class="section-label">
-                <i class="icon-cyan"><i class="fas fa-tags"></i></i>
-                Kategori
-            </div>
-            @if($project->categories->count() > 0)
-            <div class="category-chips">
-                @foreach($project->categories as $cat)
-                <span class="cat-chip">
-                    <i class="fas fa-tag"></i>
-                    {{ $cat->name }}
-                </span>
-                @endforeach
-            </div>
-            @else
-            <p class="empty-chips">Belum ada kategori yang ditambahkan.</p>
-            @endif
-        </div>
-
-        <!-- Media -->
-        <div class="section-card">
-            <div class="section-label">
-                <i class="icon-amber"><i class="fas fa-images"></i></i>
-                Media
-                <span style="margin-left:auto; font-size:12px; font-weight:500; color:var(--text-muted);">
-                    {{ $project->media->count() }} file
-                </span>
-            </div>
-            @if($project->media->count() > 0)
-            <div class="media-grid">
-                @foreach($project->media as $media)
-                    @php
-                        $ext = strtolower(pathinfo($media->file_name, PATHINFO_EXTENSION));
-                        $isImage = in_array($ext, ['jpg','jpeg','png','gif','webp','svg','bmp']);
-                    @endphp
-
-                    @if($isImage)
-                    <div class="media-item" onclick="openLightbox('{{ asset('storage/'.$media->file_path) }}', '{{ $media->file_name }}')">
-                        <img src="{{ asset('storage/'.$media->file_path) }}" alt="{{ $media->file_name }}" loading="lazy">
-                        <div class="media-overlay">
-                            <button class="media-expand" aria-label="Perbesar" onclick="event.stopPropagation(); openLightbox('{{ asset('storage/'.$media->file_path) }}', '{{ $media->file_name }}')">
-                                <i class="fas fa-expand"></i>
-                            </button>
-                            <span class="media-name">{{ $media->file_name }}</span>
-                            <span class="media-size">{{ strtoupper($ext) }}</span>
-                        </div>
-                    </div>
-                    @else
-                    <div class="media-item media-item-non-image">
-                        <i class="fas fa-{{ in_array($ext, ['mp4','mov','avi','mkv']) ? 'file-video' : (in_array($ext, ['pdf']) ? 'file-pdf' : (in_array($ext, ['doc','docx']) ? 'file-word' : (in_array($ext, ['zip','rar','7z']) ? 'file-zipper' : 'file'))) }}"></i>
-                        <span class="file-name">{{ $media->file_name }}</span>
-                        <span class="file-ext">{{ $ext }}</span>
-                    </div>
-                    @endif
-                @endforeach
-            </div>
-            @else
-            <div class="empty-media">
-                <i class="fas fa-cloud-arrow-up"></i>
-                <p>Belum ada media yang diunggah untuk project ini.</p>
-            </div>
-            @endif
-        </div>
-
-    </main>
-
-    <!-- Lightbox -->
-    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-        <button class="lightbox-close" aria-label="Tutup"><i class="fas fa-xmark"></i></button>
-        <img id="lightboxImg" src="" alt="">
-        <div class="lightbox-info" id="lightboxInfo"></div>
-    </div>
-
-    <!-- Modal Hapus -->
-    <div class="modal-overlay" id="deleteModal">
-        <div class="modal-box">
-            <div class="modal-icon"><i class="fas fa-trash-can"></i></div>
-            <h3>Hapus Project</h3>
-            <p>Apakah kamu yakin ingin menghapus <strong id="deleteProjectName"></strong>? Tindakan ini tidak bisa dibatalkan.</p>
-            <form id="deleteForm" method="POST" class="modal-actions">
+        <div class="action-buttons">
+            <form action="{{ route('user.projects.toggleStatus', $project->id) }}" method="POST" style="display:inline;">
                 @csrf
-                @method('DELETE')
-                <button type="button" class="btn-modal btn-cancel" onclick="closeDeleteModal()">Batal</button>
-                <button type="submit" class="btn-modal btn-delete-confirm">Ya, Hapus</button>
+                @method('PUT')
+                @if($project->status == 'draft')
+                    <button type="submit" class="btn-toggle publish">
+                        <i class="fas fa-rocket"></i> Publish
+                    </button>
+                @else
+                    <button type="submit" class="btn-toggle unpublish">
+                        <i class="fas fa-pen"></i> Jadikan Draft
+                    </button>
+                @endif
             </form>
         </div>
     </div>
 
-    <script>
-        // === Lightbox ===
-        function openLightbox(src, name) {
-            document.getElementById('lightboxImg').src = src;
-            document.getElementById('lightboxInfo').textContent = name;
-            document.getElementById('lightbox').classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
+    <!-- Kategori -->
+    <section class="section">
+        <div class="section-head">
+            <i class="fas fa-tags"></i>
+            <h3>Kategori</h3>
+            <span class="cnt">{{ $project->categories->count() }}</span>
+        </div>
+        @if($project->categories->count() > 0)
+            <div class="tags-row">
+                @foreach($project->categories as $cat)
+                    <span class="tag"><i class="fas fa-hashtag"></i>{{ $cat->name }}</span>
+                @endforeach
+            </div>
+        @else
+            <div class="empty-inline"><i class="fas fa-tags"></i> Tidak ada kategori</div>
+        @endif
+    </section>
 
-        function closeLightbox() {
-            document.getElementById('lightbox').classList.remove('open');
-            document.body.style.overflow = '';
-        }
+    <!-- Media -->
+    <section class="section">
+        <div class="section-head">
+            <i class="fas fa-photo-film"></i>
+            <h3>Media & Lampiran</h3>
+            <span class="cnt">{{ $project->media->count() }}</span>
+        </div>
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeLightbox();
-                closeDeleteModal();
-            }
-        });
+        @if($project->media->count() > 0)
+            <div class="media-grid">
 
-        // === Modal Hapus ===
-        function confirmDelete(name, url) {
-            document.getElementById('deleteProjectName').textContent = name;
-            document.getElementById('deleteForm').action = url;
-            document.getElementById('deleteModal').classList.add('open');
-        }
+                @foreach($project->media as $media)
 
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').classList.remove('open');
-        }
+                    {{-- IMAGE --}}
+                    @if($media->file_type == 'image')
+                        <div class="mcard">
+                            <div class="mcard-preview" onclick="openLb('{{ asset('storage/'.$media->file_path) }}')">
+                                <img src="{{ asset('storage/'.$media->file_path) }}" alt="Media" loading="lazy">
+                                <span class="mcard-type"><i class="fas fa-image"></i> Image</span>
+                            </div>
+                            <div class="mcard-bottom">
+                                <span class="mcard-fname">{{ basename($media->file_path) }}</span>
+                            </div>
+                        </div>
 
-        document.getElementById('deleteModal').addEventListener('click', function(e) {
-            if (e.target === this) closeDeleteModal();
-        });
+                    {{-- VIDEO --}}
+                    @elseif($media->file_type == 'video')
+                        <div class="mcard">
+                            <div class="mcard-preview">
+                                <video controls preload="metadata">
+                                    <source src="{{ asset('storage/'.$media->file_path) }}">
+                                </video>
+                                <span class="mcard-type"><i class="fas fa-play"></i> Video</span>
+                            </div>
+                            <div class="mcard-bottom">
+                                <span class="mcard-fname">{{ basename($media->file_path) }}</span>
+                            </div>
+                        </div>
 
-        // === Particles ===
-        (function() {
-            const c = document.getElementById('particles');
-            for (let i = 0; i < 18; i++) {
-                const p = document.createElement('div');
-                p.classList.add('particle');
-                p.style.left = Math.random() * 100 + '%';
-                p.style.width = p.style.height = (Math.random() * 3 + 1.5) + 'px';
-                p.style.animationDuration = (Math.random() * 15 + 10) + 's';
-                p.style.animationDelay = (Math.random() * 15) + 's';
-                p.style.background = Math.random() > 0.5 ? 'rgba(16,185,129,0.5)' : 'rgba(6,182,212,0.35)';
-                c.appendChild(p);
-            }
-        })();
-    </script>
+                    {{-- EMBED --}}
+                    @elseif($media->file_type == 'embed')
+                        <div class="mcard">
+                            <div class="mcard-preview">
+                                <iframe
+                                    src="{{ $media->embed_url }}"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen
+                                    loading="lazy">
+                                </iframe>
+                                <span class="mcard-type"><i class="fas fa-code"></i> Embed</span>
+                            </div>
+                            <div class="mcard-bottom">
+                                <span class="mcard-fname">Embedded content</span>
+                            </div>
+                        </div>
+
+                    {{-- FILE --}}
+                    @elseif($media->file_type == 'file')
+                        <div class="mcard file-card">
+                            <div class="mcard-preview">
+                                <div class="file-icon-wrap"><i class="fas fa-file-arrow-down"></i></div>
+                                <div class="file-label">{{ basename($media->file_path) }}</div>
+                                <a href="{{ asset('storage/'.$media->file_path) }}" target="_blank" class="btn-dl">
+                                    <i class="fas fa-download"></i> Download File
+                                </a>
+                            </div>
+                        </div>
+                    @endif
+
+                @endforeach
+
+            </div>
+        @else
+            <div class="empty-inline"><i class="fas fa-photo-film"></i> Tidak ada media yang diunggah untuk project ini</div>
+        @endif
+    </section>
+
+</main>
+
+<!-- ═══ LIGHTBOX ═══ -->
+<div class="lb" id="lb" onclick="closeLb()">
+    <button class="lb-x" onclick="closeLb()"><i class="fas fa-xmark"></i></button>
+    <img id="lbImg" src="" alt="Preview">
+</div>
+
+<script>
+    function openLb(src) {
+        const lb = document.getElementById('lb');
+        document.getElementById('lbImg').src = src;
+        lb.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLb() {
+        const lb = document.getElementById('lb');
+        lb.classList.remove('open');
+        document.body.style.overflow = '';
+        setTimeout(() => { document.getElementById('lbImg').src = ''; }, 200);
+    }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeLb();
+    });
+</script>
+
 </body>
 </html>

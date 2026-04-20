@@ -9,6 +9,7 @@ class Media extends Model
     protected $fillable = [
         'project_id',
         'file_path',
+        'embed_url',
         'file_type',
         'file_name',
         'file_size'

@@ -7,10 +7,28 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 use App\Http\Controllers\User\ProjectController;
+
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProjectModerationController;
 use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UserController;
 
+/*
+|--------------------------------------------------------------------------
+| LANDING PAGE (SEBELUM LOGIN)
+|--------------------------------------------------------------------------
+*/
+Route::get('/', function () {
+    return view('landing'); // 🔥 halaman awal
+})->name('landing');
+
+
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
@@ -21,15 +39,14 @@ Route::post('/login', function (Request $request) {
 
     if (Auth::attempt($credentials)) {
 
-        if(auth()->user()->role->slug == 'admin'){
-            return redirect('/admin/dashboard');
+        if (auth()->user()->role->slug == 'admin') {
+            return redirect()->route('admin.dashboard');
         }
 
-        return redirect('/user/projects');
+        return redirect()->route('user.projects.index');
     }
 
     return back()->with('error', 'Login gagal');
-
 });
 
 Route::get('/register', function () {
@@ -48,55 +65,82 @@ Route::post('/register', function (Request $request) {
         'name' => $request->name,
         'email' => $request->email,
         'password' => bcrypt($request->password),
-        'role_id' => 2 
+        'role_id' => 2
     ]);
 
     Auth::login($user);
 
-    return redirect('/user/projects');
+    return redirect()->route('user.projects.index');
 });
-
 
 Route::post('/logout', function () {
     Auth::logout();
-    return redirect('/login');
+    return redirect()->route('landing');
 })->name('logout');
 
-Route::get('/', function () {
 
-    if(auth()->check()){
-        if(auth()->user()->role->slug == 'admin'){
-            return redirect('/admin/dashboard');
-        }
-        return redirect('/user/projects');
-    }
+/*
+|--------------------------------------------------------------------------
+| PUBLIC PORTFOLIO
+|--------------------------------------------------------------------------
+*/
+Route::get('/portfolio', [ProjectController::class, 'publicIndex'])
+    ->name('portfolio.index');
 
-    return redirect('/login');
-});
+Route::get('/portfolio/{project}', [ProjectController::class, 'publicShow'])
+    ->name('portfolio.show');
+
+Route::get('/portfolio/category/{slug}', [ProjectController::class, 'filterByCategory'])
+    ->name('portfolio.category');
 
 
-Route::middleware(['auth'])->prefix('user')->name('user.')->group(function(){
+/*
+|--------------------------------------------------------------------------
+| USER AREA
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
 
-    Route::get('/dashboard', function(){
+    Route::get('/dashboard', function () {
         return redirect()->route('user.projects.index');
     })->name('dashboard');
 
     Route::resource('projects', ProjectController::class);
 
+    // ✅ TOGGLE STATUS FIX
+    Route::put('projects/{project}/toggle-status', [ProjectController::class, 'toggleStatus'])
+        ->name('projects.toggleStatus');
 });
 
-Route::middleware(['auth','admin'])->prefix('admin')->name('admin.')->group(function(){
 
-    Route::get('/dashboard', function(){
-        return view('admin.dashboard');
-    })->name('dashboard');
+/*
+|--------------------------------------------------------------------------
+| ADMIN AREA
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
     Route::resource('categories', CategoryController::class);
 
-    Route::delete('/projects/{project}', [ProjectModerationController::class,'destroy'])
+    Route::patch('/categories/{category}/toggle', [CategoryController::class, 'toggle'])
+        ->name('categories.toggle');
+
+    Route::resource('users', UserController::class);
+
+    // ✅ PROJECT MODERATION
+    Route::get('/projects', [ProjectModerationController::class, 'index'])
+        ->name('projects.index');
+
+    Route::get('/projects/{project}', [ProjectModerationController::class, 'show'])
+        ->name('projects.show');
+
+    Route::delete('/projects/{project}', [ProjectModerationController::class, 'destroy'])
         ->name('projects.destroy');
 
-    Route::delete('/media/{media}', [MediaController::class,'destroy'])
+    // ✅ MEDIA DELETE FIX
+    Route::delete('/media/{media}', [MediaController::class, 'destroy'])
         ->name('media.destroy');
-
 });
